@@ -4,8 +4,9 @@ The controller relies on one main class: `Perso`. This class manages the state m
 
 It has a method called `MAJ` that has to be called every frame to update the state machine, ground detection and the animations.
 Other methods that are susceptible to be called from outside are: 
-*Activate(string name): A method to interact with animator controller and use triggers and so on.
-*Move, Jump, Dash
+
+**Activate(string name): A method to interact with animator controller and use triggers and so on.
+**Move, Jump, Dash
 
 
 ## Other valuable informations
