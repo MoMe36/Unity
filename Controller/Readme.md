@@ -17,6 +17,11 @@ holds informations concerning the time during which the force should be applied,
 To ease the process of filling the informations relevant to the Perso class (animation states, character states, speed, jump force...) 
 I implemented a class called PersoFiller which holds these informations and is then used when Perso is instanciated. 
 
+## Other scripts 
+
+* TPSCam: A camera script for the Camera. Has a method for Aim Focus
+* ProjectileBehav: Destroy the projectile and apply force if contact with Rigidbody
+
 ## TO DO 
 
 Provide a better state machine. 
