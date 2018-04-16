@@ -1,15 +1,6 @@
 import bpy
 import mathutils as m
 
-if(bpy.context.object.mode == 'EDIT'):
-    bpy.ops.object.editmode_toggle()
-    for ob in bpy.data.objects:
-        bpy.ops.object.delete()
-elif(bpy.context.object.mode == 'POSE'): 
-    bpy.context.object.posemode_toggle()
-    for ob in bpy.data.objects:
-        bpy.ops.object.delete()    
-
 bpy.ops.object.armature_add()
 arma = bpy.ops.object 
 
@@ -20,13 +11,11 @@ arma.translate(value = (0,0,8))
 
 arma = bpy.ops.armature
 
-arma.select_all(action = 'TOGGLE')
-arma.select_all(action = 'TOGGLE')
+arma.select_all(action = 'SELECT')
 
 for a in range(2): 
     arma.subdivide()
     
-#bpy.ops.select_all(action = 'TOGGLE')
     
 arma = bpy.data.objects["Armature"].data
 
@@ -48,11 +37,11 @@ ob = bpy.context.object
 arm = ob.data
 
 sh = arm.edit_bones.new('Shoulder L')
-sh.head = (1,-0.3,6)
-sh.tail = sh.head + m.Vector((1.5,0.3,0))
+sh.head = (0.3,-0.3,6)
+sh.tail = sh.head + m.Vector((1,0.3,0))
 
 Ep = arm.edit_bones.new('Upperarm L')
-Ep.head = (3,0,6)
+Ep.head = (1.5,0,6)
 Ep.tail = Ep.head + m.Vector((2,0,0))
 
 bras = arm.edit_bones.new('Arm L')
@@ -126,11 +115,11 @@ IKJL.tail = IKJL.head + m.Vector((0,0.8,0))
 
 
 pj = arm.edit_bones.new('IKT Leg L')
-pj.tail = Mollet.head + m.Vector((0,-3,0))
+pj.tail = Mollet.head + m.Vector((0,-6,0))
 pj.head = pj.tail + m.Vector((0,0.8,0))
 
 pb = arm.edit_bones.new('IKT Arm L')
-pb.tail = bras.head + m.Vector((0,-3,0))
+pb.tail = bras.head + m.Vector((0,-6,0))
 pb.head = pb.tail + m.Vector((0,0.8,0))
 
 
@@ -230,4 +219,4 @@ pArm.bones['Arm R'].constraints["IK"].pole_angle = 3.1416
 
 bpy.ops.object.editmode_toggle()
 bpy.context.object.data.use_mirror_x = True
-bpy.context.object.showx_ray = True
+bpy.data.objects['Armature'].show_x_ray = True
