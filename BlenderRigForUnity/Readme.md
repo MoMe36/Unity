@@ -20,10 +20,10 @@ Create your animation as usual, using keyframes. Then, for each step, use the `p
 1. Run the script for the first time with `load = False`. Create the initial pose data (this saves a pickle file in the path chosen) 
 1. For an smoother workflow, create your full animation in a temporary action data
 1. For each frame where a keyframe is inserted do the following: 
-  1. Move the cursor to the frame. Run the script with `load = True` (make sure the only method called is `print_pose`)
-  1. In the terminal, you'll see a print which you just need to copy and paste in your animation method
-  1. After pasting, call the confirmation method, and specify number of frames to move on forward 
-  1. Move on to the next keyframe
+    1. Move the cursor to the frame. Run the script with `load = True` (make sure the only method called is `print_pose`)
+    1. In the terminal, you'll see a print which you just need to copy and paste in your animation method
+    1. After pasting, call the confirmation method, and specify number of frames to move on forward 
+    1. Move on to the next keyframe
   
  You can use existing animations methods for example and inspiration. 
  Of course, the workflow could be improved and I'm thinking about it. 
