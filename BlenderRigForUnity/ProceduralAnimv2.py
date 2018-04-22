@@ -34,7 +34,7 @@ def set_frame(nb_frames):
 
 class Skeleton(): 
 
-	def __init__(self, armature, load = False): 
+	def __init__(self, armature, load = False, path = ''): 
 
 		self.armature = armature
 		self.footL = self.armature.data.bones['Foot Control L']
@@ -76,12 +76,10 @@ class Skeleton():
 		self.leg_length = self.legL.head_local.z - self.footL.head_local.z
 		self.arm_length = self.handR.head_local.x - self.shouR.head_local.x
 
-		self.get_inital_pose(load) # Getting bone.head_local gets the bone position in edit mode !! 
+		self.get_inital_pose(path, load) # Getting bone.head_local gets the bone position in edit mode !! 
 
-	def get_inital_pose(self, load): 
+	def get_inital_pose(self, path, load): 
 
-
-		path = '/home/mehdi/Code/PythonBlender/Animation/initial_pose'
 
 		self.initial_pose = {}
 
@@ -125,6 +123,7 @@ class Skeleton():
 
 		self.set_active(entry)
 		return bpy.context.active_pose_bone.matrix.to_quaternion()
+		# return self.armature.pose.bones[entry].matrix.to_quaternion()
 
 	def set_active(self, entry): 
 
@@ -322,11 +321,89 @@ class Skeleton():
 
 		self.confirm_animation_pose()
 
+	def NierDirect(self): 
+
+		self.armature.animation_data_create()
+		self.armature.animation_data.action = bpy.data.actions.new(name = 'NierDirect')
+		self.reset_all()
+		set_frame(1)
+
+		self.move('footL', m.Vector((0.026460731402039528,0.3897853493690491,0.0)))
+		self.rotate('footL', m.Quaternion((-0.9381900429725647,0.0,0.0,-0.34612053632736206)))
+		self.move('footR', m.Vector((-0.2028655856847763,-0.09174277633428574,0.0)))
+		self.rotate('footR', m.Quaternion((-0.9381900429725647,0.0,0.0,-0.34612053632736206)))
+		self.move('armL', m.Vector((0.8313078880310059,-0.39813607931137085,0.45944881439208984)))
+		self.move('armR', m.Vector((-1.272024154663086,0.141320139169693,1.120532512664795)))
+		self.rotate('pelvis', m.Quaternion((0.9535099864006042,-0.07364386320114136,-0.022505372762680054,0.2913902699947357)))
+		self.move('pelvis', m.Vector((1.742081146005603e-09,0.2313067764043808,-0.1147652417421341)))
+		self.rotate('spine1', m.Quaternion((0.9895884394645691,0.1367088407278061,0.0007598252268508077,0.044998373836278915)))
+		self.rotate('spine2', m.Quaternion((0.9847801923751831,0.018573010340332985,-0.012571381404995918,0.17235176265239716)))
+		self.rotate('head', m.Quaternion((0.9698266983032227,-0.03957751393318176,-0.010363101959228516,-0.2403382956981659)))
+		self.move('targetLL', m.Vector((-1.937756061553955,-0.0,-0.0)))
+		self.move('targetLR', m.Vector((-0.8775777816772461,-0.0,-0.0)))
+		self.move('targetAR', m.Vector((-1.7722032070159912,-0.15358412265777588,-0.0)))
+
+
+
+		self.confirm_animation_pose()
+		add_frames(10)
+
+		self.move('footL', m.Vector((0.026460731402039528,0.3897853493690491,0.0)))
+		self.rotate('footL', m.Quaternion((-0.9381900429725647,0.0,0.0,-0.34612053632736206)))
+		self.move('footR', m.Vector((-0.2028655856847763,-0.17749513685703278,0.0)))
+		self.rotate('footR', m.Quaternion((-0.9381900429725647,0.0,0.0,-0.34612053632736206)))
+		self.move('armL', m.Vector((0.8313078880310059,-0.7017147541046143,0.39475154876708984)))
+		self.move('armR', m.Vector((-1.272024154663086,0.713640570640564,0.4038877487182617)))
+		self.rotate('pelvis', m.Quaternion((0.914976954460144,-0.0706678032875061,-0.03059367835521698,0.3961143493652344)))
+		self.move('pelvis', m.Vector((3.050342867183531e-09,0.3048088252544403,-0.14845366775989532)))
+		self.rotate('spine1', m.Quaternion((0.9895884394645691,0.13466259837150574,0.030913203954696655,0.04031267762184143)))
+		self.rotate('spine2', m.Quaternion((0.9847801327705383,0.026745636016130447,-0.007535816170275211,0.17156921327114105)))
+		self.rotate('head', m.Quaternion((0.9698266983032227,-0.04451098293066025,-0.019706517457962036,-0.23888634145259857)))
+		self.move('targetLL', m.Vector((-1.937756061553955,-0.0,-0.0)))
+		self.move('targetLR', m.Vector((-0.8775777816772461,-0.0,-0.0)))
+		self.move('targetAR', m.Vector((-1.7722032070159912,-0.15358412265777588,-0.0)))
+
+
+
+		self.confirm_animation_pose()
+		add_frames(5)
+
+		self.move('footL', m.Vector((0.026460731402039528,0.5926509499549866,0.0)))
+		self.rotate('footL', m.Quaternion((-0.9844262599945068,0.0,0.0,-0.17579801380634308)))
+		self.move('footR', m.Vector((-0.2028655856847763,-0.16623049974441528,0.2866579294204712)))
+		self.rotate('footR', m.Quaternion((0.9697246551513672,0.24420087039470673,5.422348578914143e-17,0.0)))
+		self.move('armL', m.Vector((0.4912862777709961,-0.1091192364692688,-0.012456417083740234)))
+		self.move('armR', m.Vector((-1.1962119340896606,0.6359500288963318,0.4038877487182617)))
+		self.rotate('pelvis', m.Quaternion((0.9509943127632141,-0.04194921255111694,-0.02359294891357422,0.3054715692996979)))
+		self.move('pelvis', m.Vector((3.050342867183531e-09,0.23236986994743347,-0.16200341284275055)))
+		self.rotate('spine1', m.Quaternion((0.9932671189308167,0.11442195624113083,0.007833302021026611,-0.0163295716047287)))
+		self.rotate('spine2', m.Quaternion((0.9944694638252258,0.02750036120414734,-0.0007123053655959666,0.10135988146066666)))
+		self.rotate('head', m.Quaternion((0.9920329451560974,-0.05601129308342934,-0.011701509356498718,-0.11223392188549042)))
+		self.move('targetLL', m.Vector((-0.9688777923583984,-0.0,-0.0)))
+		self.move('targetLR', m.Vector((0.1193469762802124,-0.0,-0.0)))
+		self.move('targetAL', m.Vector((0.47158849239349365,-0.019041895866394043,0.3152146339416504)))
+		self.move('targetAR', m.Vector((-1.5472300052642822,-0.15358412265777588,-0.0)))
+
+		self.confirm_animation_pose()
+		add_frames(10)
+		
+		self.move('footL', m.Vector((0.026460731402039528,0.3897853493690491,0.0)))
+		self.move('footR', m.Vector((-0.2028655856847763,-0.33096739649772644,0.0)))
+		self.move('armL', m.Vector((1.2053508758544922,1.342653751373291,0.6341211795806885)))
+		self.move('armR', m.Vector((-0.9581711292266846,0.3920111656188965,0.4038877487182617)))
+		self.rotate('pelvis', m.Quaternion((0.9991284608840942,0.04197373986244202,-9.320019323924824e-18,-4.1359030627651384e-25)))
+		self.move('pelvis', m.Vector((3.050342867183531e-09,0.0049205380491912365,-0.1749144047498703)))
+		self.rotate('spine1', m.Quaternion((0.9789032936096191,0.060621291399002075,0.028352320194244385,-0.1930534392595291)))
+		self.rotate('spine2', m.Quaternion((0.990777850151062,0.04887975752353668,0.012846961617469788,-0.12571793794631958)))
+		self.rotate('head', m.Quaternion((0.9543382525444031,-0.028724130243062973,-0.03360472992062569,0.29543912410736084)))
+		self.move('targetAL', m.Vector((1.9523178339004517,-0.07883095741271973,1.3049498796463013)))
+		self.move('targetAR', m.Vector((-0.8408421277999878,-0.15358412265777588,-0.0)))
+
+		self.confirm_animation_pose()
 
 
 	def print_pose(self): 
 
-		cumulated_rotation = m.Quaternion([0.7071,0.7071,0.,0.])
 		for entry in self.dico: 
 			initial = self.initial_pose[entry]
 
@@ -339,7 +416,7 @@ class Skeleton():
 				new_position = current.to_translation() 
 				old_position = initial.to_translation()
 				translation = new_position - old_position
-				if translation.length > 0.05: 
+				if translation.length > 0.001: 
 					translation /= self.leg_length
 					print('self.move(\'{}\', m.Vector(({},{},{})))'.format(entry, translation.x,translation.y,translation.z))
 				
@@ -359,7 +436,7 @@ class Skeleton():
 				old_position = initial.to_translation()
 				translation = new_position - old_position
 
-				if translation.length > 0.05: 
+				if translation.length > 0.001: 
 					translation /= self.arm_length
 					print('self.move(\'{}\', m.Vector(({},{},{})))'.format(entry, translation.x,translation.y,translation.z))
 
@@ -368,6 +445,18 @@ class Skeleton():
 
 
 				if entry == 'pelvis':	
+
+					old_rotation = m.Quaternion([0.7071,0.7071,0.,0.])
+
+					new_rotation = self.get_bone_rotation('pelvis')
+
+					if new_rotation != old_rotation: 
+						# old_rotation.invert()
+						rotation = old_rotation.rotation_difference(new_rotation)
+						# rotation = (old_rotation*new_rotation).normalized()
+
+						print('self.rotate(\'{}\', m.Quaternion(({},{},{},{})))'.format(entry, rotation.w,rotation.x,rotation.z,rotation.y))
+
 					new_position = current.to_translation() 
 					old_position = initial.to_translation()
 					translation = new_position - old_position
@@ -375,17 +464,6 @@ class Skeleton():
 					if translation.length > 0.05: 
 						translation /= self.leg_length
 						print('self.move(\'{}\', m.Vector(({},{},{})))'.format(entry, translation.x,translation.y,translation.z))
-
-					old_rotation = m.Quaternion([0.7071,0.7071,0.,0.])
-
-					new_rotation = self.get_bone_rotation('pelvis')
-
-					if new_rotation != old_rotation: 
-						old_rotation.invert()
-						rotation = old_rotation*new_rotation
-
-						print('self.rotate(\'{}\', m.Quaternion(({},{},{},{})))'.format(entry, rotation.w,rotation.x,rotation.y,rotation.z))
-
 				
 				else:
 					if entry == 'spine1': 
@@ -404,8 +482,16 @@ class Skeleton():
 						c_n_r = new_rotation.copy()
 						c_o_r.invert()
 
-						rotation = c_n_r*c_o_r
+						rotation = (c_n_r*c_o_r).normalized()
 						print('self.rotate(\'{}\', m.Quaternion(({},{},{},{})))'.format(entry, rotation.w,rotation.x,rotation.y,rotation.z))
+
+
+
+	def test(self): 
+
+		self.reset_all()
+
+		self.rotate('spine1', m.Quaternion((0.9651556611061096,0.0,-0.2616766095161438,-2.9802322387695312e-08)))
 
 
 
@@ -413,11 +499,14 @@ class Skeleton():
 print('\n'*20)
 
 
-
-sketelon = Skeleton(bpy.data.objects['Armature'], load = True)
+path = '/home/mehdi/Blender/Scripts/initial_pose'
+sketelon = Skeleton(bpy.data.objects['Armature'], load = True, path = path)
 
 sketelon.print_pose()
 
 
+# sketelon.test()
+sketelon.NierDirect()
 # sketelon.RunMale()
-sketelon.HitUppercut()
+# sketelon.HitUppercut()
+# sketelon.IdleCombat()
