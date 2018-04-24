@@ -634,6 +634,148 @@ class Skeleton():
 
 		self.confirm_animation_pose()
 
+	def DashLateral(self): 
+
+		self.armature.animation_data_create()
+		self.armature.animation_data.action = bpy.data.actions.new(name = 'DashR')
+		self.reset_all()
+		set_frame(1)
+
+		self.move('footL', m.Vector((0.5222042798995972,-0.005565029103308916,-0.5110498070716858)))
+		self.move('footR', m.Vector((-0.23781046271324158,0.1748749315738678,-0.5110498070716858)))
+		self.move('armL', m.Vector((-0.02681732177734375,0.05738535523414612,-0.2712744176387787)))
+		self.move('armR', m.Vector((0.441429078578949,0.05738523602485657,-0.19272282719612122)))
+		self.rotate('pelvis', m.Quaternion((0.9932456612586975,-0.09341317415237427,0.06578686088323593,0.02070014737546444)))
+		self.move('pelvis', m.Vector((-0.050784625113010406,0.0,-0.25915393233299255)))
+		self.rotate('spine1', m.Quaternion((0.9807031154632568,0.19520102441310883,-0.004782840143889189,-0.009748213924467564)))
+		self.rotate('spine2', m.Quaternion((0.9767711162567139,0.21227382123470306,0.021787129342556,0.01957916095852852)))
+		self.move('targetLL', m.Vector((-0.39848193526268005,2.196868419647217,0.391836941242218)))
+		self.move('targetLR', m.Vector((0.9249303936958313,0.6579889059066772,0.391836941242218)))
+		self.move('targetAL', m.Vector((0.14018625020980835,-1.1920928955078125e-07,-0.6618927717208862)))
+		self.move('targetAR', m.Vector((0.43748873472213745,-1.1920928955078125e-07,-1.1955543756484985)))
+
+		self.confirm_animation_pose()
+		add_frames(10)
+
+		self.move('footL', m.Vector((0.5222042798995972,-0.005565029103308916,-0.5110498070716858)))
+		self.move('footR', m.Vector((-0.23781046271324158,0.1748749315738678,-0.5110498070716858)))
+		self.move('armL', m.Vector((-0.02681732177734375,0.05738535523414612,-0.2712744176387787)))
+		self.move('armR', m.Vector((0.419422447681427,0.623275637626648,0.4124605357646942)))
+		self.rotate('pelvis', m.Quaternion((0.9932456612586975,-0.09341317415237427,0.06578686088323593,0.02070014737546444)))
+		self.move('pelvis', m.Vector((-0.050784625113010406,0.0,-0.41827908158302307)))
+		self.rotate('spine1', m.Quaternion((0.9807031154632568,0.19520102441310883,-0.004782840143889189,-0.009748213924467564)))
+		self.rotate('spine2', m.Quaternion((0.9767711162567139,0.21227382123470306,0.021787129342556,0.01957916095852852)))
+		self.move('targetLL', m.Vector((-0.39848193526268005,2.196868419647217,0.391836941242218)))
+		self.move('targetLR', m.Vector((0.9249303936958313,0.6579889059066772,0.391836941242218)))
+		self.move('targetAL', m.Vector((0.14018625020980835,-1.1920928955078125e-07,-0.6618927717208862)))
+		self.move('targetAR', m.Vector((-0.640838086605072,-1.1920928955078125e-07,-0.3427961766719818)))
+
+		self.confirm_animation_pose()
+		add_frames(10)
+
+		self.move('footL', m.Vector((0.5946977734565735,-0.005565029103308916,-0.5071312189102173)))
+		self.rotate('footL', m.Quaternion((0.8679088354110718,-9.252189014929968e-10,-0.4967235326766968,-7.031670890000896e-08)))
+		self.move('footR', m.Vector((-0.05559714511036873,0.14774250984191895,-0.5110498070716858)))
+		self.rotate('footR', m.Quaternion((0.9291046261787415,2.7553517245593184e-09,-0.36981725692749023,-4.684101284624376e-08)))
+		self.move('armL', m.Vector((0.17694813013076782,0.05738532170653343,-0.016567617654800415)))
+		self.move('armR', m.Vector((1.1586835384368896,0.05738520249724388,0.33706721663475037)))
+		self.rotate('pelvis', m.Quaternion((0.978334903717041,-0.09521400928497314,0.18364542722702026,0.00942423939704895)))
+		self.move('pelvis', m.Vector((-0.17617875337600708,2.1059754828911537e-08,-0.41589656472206116)))
+		self.rotate('spine1', m.Quaternion((0.9807031750679016,0.1919664442539215,-0.004782848060131073,0.036706551909446716)))
+		self.rotate('spine2', m.Quaternion((0.9767710566520691,0.20161691308021545,0.02178710140287876,0.06924034655094147)))
+		self.move('targetLL', m.Vector((-0.39848193526268005,2.196868419647217,0.391836941242218)))
+		self.move('targetLR', m.Vector((0.9249303936958313,0.6579889059066772,0.391836941242218)))
+		self.move('targetAL', m.Vector((0.14018625020980835,-1.1920928955078125e-07,-0.6618927717208862)))
+		self.move('targetAR', m.Vector((0.43748873472213745,-1.1920928955078125e-07,-1.1955543756484985)))
+
+		self.confirm_animation_pose()
+		add_frames(10)
+
+		self.move('footL', m.Vector((0.119,-0.006,-0.511)))
+		self.move('footR', m.Vector((-0.641,0.175,-0.511)))
+		self.move('armL', m.Vector((-0.027,0.057,-0.271)))
+		self.move('armR', m.Vector((0.441,0.057,-0.193)))
+		self.rotate('pelvis', m.Quaternion((0.994,-0.090,-0.052,0.032)))
+		self.move('pelvis', m.Vector((-0.051,0.000,-0.259)))
+		self.rotate('spine1', m.Quaternion((0.981,0.187,-0.005,-0.055)))
+		self.rotate('spine2', m.Quaternion((0.977,0.211,0.022,-0.031)))
+		self.move('targetLL', m.Vector((-0.398,2.197,0.392)))
+		self.move('targetLR', m.Vector((0.925,0.658,0.392)))
+		self.move('targetAL', m.Vector((0.140,-0.000,-0.662)))
+		self.move('targetAR', m.Vector((0.437,-0.000,-1.196)))
+
+		self.confirm_animation_pose()
+
+		self.armature.animation_data_create()
+		self.armature.animation_data.action = bpy.data.actions.new(name = 'DashL')
+		self.reset_all()
+		set_frame(1)
+
+		self.move('footL', m.Vector((0.238,0.175,-0.511)))
+		self.move('footR', m.Vector((-0.522,-0.006,-0.511)))
+		self.move('armL', m.Vector((-0.441,0.057,-0.193)))
+		self.move('armR', m.Vector((0.027,0.057,-0.271)))
+		self.rotate('pelvis', m.Quaternion((0.993,-0.093,-0.066,-0.021)))
+		self.move('pelvis', m.Vector((0.051,0.000,-0.259)))
+		self.rotate('spine1', m.Quaternion((0.981,0.195,0.005,0.010)))
+		self.rotate('spine2', m.Quaternion((0.977,0.212,-0.022,-0.020)))
+		self.move('targetLL', m.Vector((-0.925,0.658,0.392)))
+		self.move('targetLR', m.Vector((0.398,2.197,0.392)))
+		self.move('targetAL', m.Vector((-0.437,-0.000,-1.196)))
+		self.move('targetAR', m.Vector((-0.140,-0.000,-0.662)))
+
+		self.confirm_animation_pose()
+		add_frames(10)
+
+		self.move('footL', m.Vector((0.238,0.175,-0.511)))
+		self.move('footR', m.Vector((-0.522,-0.006,-0.511)))
+		self.move('armL', m.Vector((-0.419,0.623,0.412)))
+		self.move('armR', m.Vector((0.027,0.057,-0.271)))
+		self.rotate('pelvis', m.Quaternion((0.993,-0.093,-0.066,-0.021)))
+		self.move('pelvis', m.Vector((0.051,0.000,-0.418)))
+		self.rotate('spine1', m.Quaternion((0.981,0.195,0.005,0.010)))
+		self.rotate('spine2', m.Quaternion((0.977,0.212,-0.022,-0.020)))
+		self.move('targetLL', m.Vector((-0.925,0.658,0.392)))
+		self.move('targetLR', m.Vector((0.398,2.197,0.392)))
+		self.move('targetAL', m.Vector((0.641,-0.000,-0.343)))
+		self.move('targetAR', m.Vector((-0.140,-0.000,-0.662)))
+
+		self.confirm_animation_pose()
+		add_frames(10)
+
+		self.move('footL', m.Vector((0.056,0.148,-0.511)))
+		self.rotate('footL', m.Quaternion((0.929,0.000,0.370,0.000)))
+		self.move('footR', m.Vector((-0.595,-0.006,-0.507)))
+		self.rotate('footR', m.Quaternion((0.868,-0.000,0.497,0.000)))
+		self.move('armL', m.Vector((-1.159,0.057,0.337)))
+		self.move('armR', m.Vector((-0.177,0.057,-0.017)))
+		self.rotate('pelvis', m.Quaternion((0.978,-0.095,-0.184,-0.009)))
+		self.move('pelvis', m.Vector((0.176,0.000,-0.416)))
+		self.rotate('spine1', m.Quaternion((0.981,0.192,0.005,-0.037)))
+		self.rotate('spine2', m.Quaternion((0.977,0.202,-0.022,-0.069)))
+		self.move('targetLL', m.Vector((-0.925,0.658,0.392)))
+		self.move('targetLR', m.Vector((0.398,2.197,0.392)))
+		self.move('targetAL', m.Vector((-0.437,-0.000,-1.196)))
+		self.move('targetAR', m.Vector((-0.140,-0.000,-0.662)))
+
+		self.confirm_animation_pose()
+		add_frames(10)
+
+		self.move('footL', m.Vector((0.641,0.175,-0.511)))
+		self.move('footR', m.Vector((-0.119,-0.006,-0.511)))
+		self.move('armL', m.Vector((-0.441,0.057,-0.193)))
+		self.move('armR', m.Vector((0.027,0.057,-0.271)))
+		self.rotate('pelvis', m.Quaternion((0.994,-0.090,0.052,-0.032)))
+		self.move('pelvis', m.Vector((0.051,0.000,-0.259)))
+		self.rotate('spine1', m.Quaternion((0.981,0.187,0.005,0.055)))
+		self.rotate('spine2', m.Quaternion((0.977,0.211,-0.022,0.031)))
+		self.move('targetLL', m.Vector((-0.925,0.658,0.392)))
+		self.move('targetLR', m.Vector((0.398,2.197,0.392)))
+		self.move('targetAL', m.Vector((-0.437,-0.000,-1.196)))
+		self.move('targetAR', m.Vector((-0.140,-0.000,-0.662)))
+
+		self.confirm_animation_pose()
+
 
 	def print_pose(self): 
 
@@ -651,7 +793,7 @@ class Skeleton():
 				translation = new_position - old_position
 				if translation.length > 0.001: 
 					translation /= self.leg_length
-					print('self.move(\'{}\', m.Vector(({},{},{})))'.format(entry, translation.x,translation.y,translation.z))
+					print('self.move(\'{}\', m.Vector(({:.3f},{:.3f},{:.3f})))'.format(entry, translation.x,translation.y,translation.z))
 				
 				new_rotation = current.to_quaternion()
 				old_rotation = initial.to_quaternion()
@@ -660,7 +802,7 @@ class Skeleton():
 					old_rotation.invert()
 					rotation = new_rotation*old_rotation
 
-					print('self.rotate(\'{}\', m.Quaternion(({},{},{},{})))'.format(entry, rotation.w,rotation.x,rotation.y,rotation.z))
+					print('self.rotate(\'{}\', m.Quaternion(({:.3f},{:.3f},{:.3f},{:.3f})))'.format(entry, rotation.w,rotation.x,rotation.y,rotation.z))
 				
 
 			if entry in ['armL', 'armR', 'targetLL', 'targetLR', 'targetAL', 'targetAR']: 
@@ -671,7 +813,7 @@ class Skeleton():
 
 				if translation.length > 0.001: 
 					translation /= self.arm_length
-					print('self.move(\'{}\', m.Vector(({},{},{})))'.format(entry, translation.x,translation.y,translation.z))
+					print('self.move(\'{}\', m.Vector(({:.3f},{:.3f},{:.3f})))'.format(entry, translation.x,translation.y,translation.z))
 
 
 			if entry in ['head', 'spine1', 'spine2', 'pelvis']:
@@ -688,7 +830,7 @@ class Skeleton():
 						rotation = old_rotation.rotation_difference(new_rotation)
 						# rotation = (old_rotation*new_rotation).normalized()
 
-						print('self.rotate(\'{}\', m.Quaternion(({},{},{},{})))'.format(entry, rotation.w,rotation.x,rotation.z,rotation.y))
+						print('self.rotate(\'{}\', m.Quaternion(({:.3f},{:.3f},{:.3f},{:.3f})))'.format(entry, rotation.w,rotation.x,rotation.z,rotation.y))
 
 					new_position = current.to_translation() 
 					old_position = initial.to_translation()
@@ -696,7 +838,7 @@ class Skeleton():
 
 					if translation.length > 0.05: 
 						translation /= self.leg_length
-						print('self.move(\'{}\', m.Vector(({},{},{})))'.format(entry, translation.x,translation.y,translation.z))
+						print('self.move(\'{}\', m.Vector(({:.3f},{:.3f},{:.3f})))'.format(entry, translation.x,translation.y,translation.z))
 				
 				else:
 					if entry == 'spine1': 
@@ -716,7 +858,7 @@ class Skeleton():
 						c_o_r.invert()
 
 						rotation = (c_n_r*c_o_r).normalized()
-						print('self.rotate(\'{}\', m.Quaternion(({},{},{},{})))'.format(entry, rotation.w,rotation.x,rotation.y,rotation.z))
+						print('self.rotate(\'{}\', m.Quaternion(({:.3f},{:.3f},{:.3f},{:.3f})))'.format(entry, rotation.w,rotation.x,rotation.y,rotation.z))
 
 
 
@@ -737,7 +879,7 @@ sketelon = Skeleton(bpy.data.objects['Armature'], load = True, path = path)
 
 sketelon.print_pose()
 
-sketelon.NierPunch2()
+# sketelon.NierPunch2()
 # sketelon.test()
 # sketelon.NierDirect()
 # sketelon.RunMale()
