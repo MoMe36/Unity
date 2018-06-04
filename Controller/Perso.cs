@@ -18,6 +18,9 @@ public class Perso
 	public float MaxVelocity = 1000; 
 	public float DashForce = 3;
 	public float DashTime = 0.5f; 
+	public float AdditionalGravity = 1f; 
+	public float DragFly = 1f;
+	public float DragGround = 1f; 
 
 	Impulsion impulsion; 
 
@@ -143,6 +146,7 @@ public class Perso
 				is_grounded = true; 
 				anim.SetTrigger("TouchedGround"); 
 				// Debug.Log("Landing");
+				rb.drag = DragGround; 
 			}
 		}
 
@@ -153,6 +157,7 @@ public class Perso
 				anim.SetTrigger("Fall");
 				is_grounded = false;
 				// Debug.Log("Falling");
+				rb.drag = DragFly; 
 			}
 		}
 
@@ -161,6 +166,13 @@ public class Perso
 		rb.velocity = Vector3.ClampMagnitude(rb.velocity, MaxVelocity);
 		// Debug.Break();
 
+		if(!is_grounded)
+			ApplyAdditionalForce(-transform.up*AdditionalGravity);
+	}
+
+	void ApplyAdditionalForce(Vector3 v)
+	{
+		rb.AddForce(v);
 	}
 
 	public void CheckImpulsion()
@@ -280,6 +292,10 @@ public class Perso
 		MaxVelocity = p.MaxVelocity; 
 		DashForce = p.DashForce; 
 		DashTime = p.DashTime; 
+
+		AdditionalGravity = p.AdditionalGravity; 
+		DragFly = p.DragFly;
+		DragGround = p.DragGround;
 
 		height = G.GetComponent<Collider>().bounds.size.y/2; 
 	}

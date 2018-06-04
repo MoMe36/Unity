@@ -12,6 +12,9 @@ public class PersoFiller
 	public float MaxVelocity = 1000;
 	public float DashForce = 3;
 	public float DashTime = 0.5f; 
+	public float AdditionalGravity = 5f; 
+	public float DragFly = 1f; 
+	public float DragGround = 2f; 
 
 
 	[Header("Character States")]
