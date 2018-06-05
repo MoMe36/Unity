@@ -47,8 +47,20 @@ class Humanoid():
 		'targetAR':self.targetArmR
 		}
 
+		leg_pos = self.armature.data.bones['Leg L'].head.z
+		foot_pos = self.armature.data.bones['Foot Control L'].head.z
+		hand_pos = self.armature.data.bones['Upperarm L'].head.x 
+		shoulder_pos = self.armature.data.bones['IK Arm L'].head.x
 
 		self.bones_names = [k.name for k in self.armature.data.bones]
+
+		self.arm_length = math.fabs(hand_pos - shoulder_pos)
+		self.leg_length = math.fabs(leg_pos - foot_pos)
+
+		self.initial_pelvis_pos = self.pelvis.head.x
+
+		self.leg_sensitive = ['Foot Control L', 'Foot Control R','IKT Leg L','IKT Leg R', 'Pelvis']
+		self.arm_sensitive = ['IK Arm L','IK Arm R','IKT Arm L','IKT Arm R' ]
 
 	def select(self, bone): 
 
