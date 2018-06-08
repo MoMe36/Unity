@@ -16,6 +16,17 @@ public class PersoFiller
 	public float DragFly = 1f; 
 	public float DragGround = 2f; 
 
+	[Header("Attributes/Animation")]
+	public Transform Armature; 
+	public bool UsePivot = true; 
+	public float PivotDelay = 0.2f; 
+	public bool UseLean = true; 
+	public float MaxLeaningAngle = 15; 
+	public float LeanSpeed = 1f; 
+	public bool UseJumpOver = false; 
+	public Vector3 ImpulsionComponents = new Vector3(0, 1f, 0.1f);
+	public float ImpulsionDuration, ImpulsionStrength, ImpulsionDelay, DetectionDistance; 
+
 
 	[Header("Character States")]
 	public List <CharacterStates> c_states = new List<CharacterStates>();

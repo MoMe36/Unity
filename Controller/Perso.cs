@@ -22,7 +22,24 @@ public class Perso
 	public float DragFly = 1f;
 	public float DragGround = 1f; 
 
-	Impulsion impulsion; 
+	public bool UsePivot; 
+	public float PivotDelay;
+
+	public bool UseLean;
+	public Transform ArmatureTransform;
+	public float MaxLeaningAngle;
+	public float LeanSpeed; 
+	Quaternion LeanRight,LeanLeft; 
+	Quaternion InitialArmatureRotation; 
+
+
+	public bool UseJumpOver; 
+	public Vector3 JumpOverDirection; 
+	public float JumpOverImpulsionDuration, JumpOverImpulsionStrength, JumpOverImpulsionDelay, JumpOverDetectionDistance; 
+
+	public float TimeBeforeForce = 0f; 
+
+	DelayedImpulsion impulsion; 
 
 	bool is_grounded = true; 
 	bool is_falling = false; 
@@ -85,6 +102,7 @@ public class Perso
 	public Perso(GameObject g, PersoFiller p, Camera c)
 	{
 		G = g; 
+		A = g; 
 		transform = g.GetComponent<Transform>(); 
 		rb = g.GetComponent<Rigidbody>(); 
 		anim = g.GetComponent<Animator>(); 
@@ -102,14 +120,16 @@ public class Perso
 		CheckPhysics(); 
 		CheckImpulsion();
 
-		if(current_c_state != null)
-			Debug.Log(current_c_state.Name);
+		// if(current_c_state != null)
+		// 	Debug.Log(current_c_state.Name);
 	}
 
 	void UpdateStates()
 	{
 		states_enumerator = (states_enumerator+1)%max_enumerator; 
 		CheckState(); 
+		CheckLean(Vector3.zero, false); 
+		CheckJumpOver(); 
 	}
 
 	void CheckState()
@@ -122,7 +142,6 @@ public class Perso
 		CheckAllCorrespondances();
 	}
 
-
 	void CheckPhysics()
 	{
 		// First Check ground collision 
@@ -132,7 +151,7 @@ public class Perso
 		Ray ray = new Ray(transform.position, -transform.up); 
 		RaycastHit hit; 
 
-		Debug.DrawRay(ray.origin,ray.direction*height,Color.red,1.0f); 
+		// Debug.DrawRay(ray.origin,ray.direction*height,Color.red,1.0f); 
 
 		if(Physics.Raycast(ray, out hit, height*1.05f))
 		{
@@ -155,6 +174,7 @@ public class Perso
 			if(is_grounded)
 			{
 				anim.SetTrigger("Fall");
+				anim.ResetTrigger("TouchedGround"); 
 				is_grounded = false;
 				// Debug.Log("Falling");
 				rb.drag = DragFly; 
@@ -168,6 +188,52 @@ public class Perso
 
 		if(!is_grounded)
 			ApplyAdditionalForce(-transform.up*AdditionalGravity);
+	}
+
+	public void CheckJumpOver()
+	{		
+		if(!is_grounded)
+		{
+			Ray ray = new Ray(transform.position, transform.forward); 
+			RaycastHit hit; 
+			if(Physics.Raycast(ray, out hit, JumpOverDetectionDistance))
+			{
+				Activate("JumpOver"); 
+				Vector3 v =JumpOverDirection.y*transform.up + JumpOverDirection.z*transform.forward; 
+				CustomImpulsion(v.normalized,JumpOverImpulsionStrength, JumpOverImpulsionDelay,JumpOverImpulsionDuration); 
+			}
+		}
+	}
+
+	public void CheckPivot(Vector3 v)
+	{
+		Vector3 current = transform.forward; 
+		current.y =0 ; 
+		float a = Vector3.Angle(current, v); 
+		
+		if(a > 90)
+		{
+			Activate("PivotRun");
+			TimeBeforeForce = PivotDelay; 
+		}
+	}
+
+	public void CheckLean(Vector3 v, bool Moving)
+	{
+		if(Moving)
+		{
+			float angle = Vector3.Angle(transform.forward, v); 
+			if(angle > 5)
+			{
+				Debug.Log("Tilting"); 
+				Quaternion target = (Vector3.Dot(transform.right,v) > 0) ? LeanRight : LeanLeft; 
+				ArmatureTransform.localRotation = Quaternion.RotateTowards(ArmatureTransform.localRotation, target, LeanSpeed); 
+			}	
+		}
+		else
+		{
+			ArmatureTransform.localRotation = Quaternion.RotateTowards(ArmatureTransform.localRotation, InitialArmatureRotation, LeanSpeed);	
+		}
 	}
 
 	void ApplyAdditionalForce(Vector3 v)
@@ -196,12 +262,13 @@ public class Perso
 	public void Dash(Vector3 v)
 	{
 		v = CamToPlayer(v); 
-		impulsion = new Impulsion(v, DashForce, DashTime); 
+		impulsion = new DelayedImpulsion(v, DashForce, DashTime, 0.0f); 
 	}
 
-	public void Jump()
+	public void Jump(float delay = 0.1f)
 	{
-		impulsion = new Impulsion(Vector3.up, JumpForce, 0.3f); 
+		if(is_grounded)
+			impulsion = new DelayedImpulsion(Vector3.up, JumpForce, 0.3f, delay); 
 		// rb.velocity += Vector3.up*JumpForce;
 		// rb.AddForce(transform.up*JumpForce);
 	}
@@ -223,6 +290,14 @@ public class Perso
 		{
 			Vector3 transformed_v = CamToPlayer(v); 
 			Move(transformed_v); 
+			if(UsePivot)
+				CheckPivot(transformed_v); 
+			if(UseLean)
+				CheckLean(transformed_v, true); 
+		}
+		else
+		{
+			CheckLean(Vector3.zero, false); 
 		}
 		
 	}
@@ -239,7 +314,12 @@ public class Perso
 
 	public void Move(Vector3 v)
 	{
-		rb.AddForce(transform.forward*Speed);
+		if(TimeBeforeForce > 0)
+			TimeBeforeForce -= Time.deltaTime; 
+		else
+		{
+			rb.AddForce(transform.forward*Speed);	
+		}
 		Rotate(v); 
 	}
 
@@ -250,6 +330,11 @@ public class Perso
 
 		Quaternion rot = transform.rotation*Quaternion.AngleAxis(angle,transform.up); 
 		transform.rotation = Quaternion.Lerp(transform.rotation, rot, RotationSpeed*Time.deltaTime); 
+	}
+
+	public bool GetGrounded()
+	{
+		return is_grounded; 
 	}
 
 	public void Activate(string s)
@@ -281,6 +366,11 @@ public class Perso
 		max_enumerator = states.Count; 
 	}
 
+	public void CustomImpulsion(Vector3 v, float f, float d, float de)
+	{
+		impulsion = new DelayedImpulsion(v, f, d, de); 
+	}
+
 	public void FillFromFiller(PersoFiller p)
 	{
 		states = p.states; 
@@ -293,6 +383,25 @@ public class Perso
 		DashForce = p.DashForce; 
 		DashTime = p.DashTime; 
 
+		UsePivot = p.UsePivot;
+		PivotDelay = p.PivotDelay;
+
+		UseLean = p.UseLean; 
+		ArmatureTransform = p.Armature; 
+		MaxLeaningAngle = -(90 + p.MaxLeaningAngle); 
+		LeanRight = Quaternion.Euler(new Vector3(MaxLeaningAngle, -90, 90)); 
+		LeanLeft = Quaternion.Euler(new Vector3(MaxLeaningAngle, 90, -90)); 
+		LeanSpeed = p.LeanSpeed; 
+		InitialArmatureRotation = ArmatureTransform.localRotation; 
+
+		UseJumpOver = p.UseJumpOver; 
+		JumpOverDirection = p.ImpulsionComponents;
+		JumpOverImpulsionDuration = p.ImpulsionDuration;
+		JumpOverImpulsionStrength = p.ImpulsionStrength;
+		JumpOverImpulsionDelay = p.ImpulsionDelay; 
+		JumpOverDetectionDistance = p.DetectionDistance; 
+
+
 		AdditionalGravity = p.AdditionalGravity; 
 		DragFly = p.DragFly;
 		DragGround = p.DragGround;
@@ -302,7 +411,7 @@ public class Perso
 
 	public void InitiateImpulsion()
 	{
-		impulsion = new Impulsion(Vector3.zero, 0,0); 
+		impulsion = new DelayedImpulsion(Vector3.zero, 0,0,0); 
 	}
 
 	public void CheckAllCorrespondances()
