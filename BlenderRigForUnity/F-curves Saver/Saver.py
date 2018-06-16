@@ -64,7 +64,12 @@ class StructureSaver():
 
 		self.curves = []
 		for i,c in enumerate(curves): 
-			current_name = self.bones[int(i/7)]
+			try: 
+				current_name = self.bones[int(i/7)]
+			except IndexError: 
+				print('Exiting before registering other bones')
+				break 
+
 			ratio = 1.
 			if i%7 < 3:
 				if current_name in armature.leg_sensitive:

@@ -52,7 +52,8 @@ class Humanoid():
 		hand_pos = self.armature.data.bones['Upperarm L'].head.x 
 		shoulder_pos = self.armature.data.bones['IK Arm L'].head.x
 
-		self.bones_names = [k.name for k in self.armature.data.bones]
+		# self.bones_names = [k.name for k in self.armature.data.bones] # PREVIOUS VERSION 
+		self.bones_names = [k.name for k in self.armature.data.bones if "other" not in k.name]
 
 		self.arm_length = math.fabs(hand_pos - shoulder_pos)
 		self.leg_length = math.fabs(leg_pos - foot_pos)
