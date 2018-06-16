@@ -18,7 +18,10 @@ public class PersoFillerShooter
 
 	[Header("Speficic Attributes")]
 	public bool UseStep = false; 
-	public float AngleBeforeStep = 100f; 
+	public float AngleBeforeStep = 30; 
+	public float StepSpeed = 5; 
+	public float AngleTarget = 45; 
+	public float MinAngleStep = 5f; 
 
 
 	[Header("Fly Attributes")]
@@ -26,6 +29,16 @@ public class PersoFillerShooter
 	public float LandingSpeed = 5f; 
 	public float MinSpeedLandingRatio = 3; 
 
+	[Header("SuperFly Attributes")]
+	public bool UseSuperFly = false; 
+	public float StraightSpeed = 5f; 
+	public float SuperFlyRotationSpeed = 3f;
+	public float VerticalRatio = 0.5f; 
+
+
+	[Header("Special Effects")]
+	public bool UseSpecialEffects = true; 
+	public List<NamedEffect> FXHolder = new List<NamedEffect>(); 
 
 
 	public List <AnimationState> AnimationStates = new List<AnimationState>(); 

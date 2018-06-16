@@ -27,6 +27,7 @@ public class PersoShooter
 	bool is_grounded = true; 
 	bool is_falling = false; 
 	bool is_flying = false; 
+	bool is_super_flying = false; 
 	public bool UseAdditionalGravity = true; 
 
 
@@ -35,12 +36,33 @@ public class PersoShooter
 	float LandingSpeed = 5f; 
 	float MinSpeedLandingRatio = 1; 
 
+
+	bool UseStep = false; 
+	float AngleBeforeStep =1f; 
+	float StepSpeed =1f; 
+	float AngleTarget =1f; 
+	float MinAngleStep = 1f; 
+	bool is_stepping = false; 
+	Quaternion StepTarget = Quaternion.identity; 
+
+
+	bool UseSuperFly = false; 
+	float StraightSpeed = 1f; 
+	float SuperFlyRotationSpeed = 1f; 
+	float VerticalRatio = 0.5f; 
+
+	public bool UseSpecialEffects = false; 
+	public List<NamedEffect> FXHolder = new List<NamedEffect>(); 
+	int EffectIterator = 0; 
+	int MaxEffectIterator; 
+
 	float height; 
 
 	public List <AnimationState> states = new List<AnimationState>(); 
 	public List <CharacterStates> c_states = new List<CharacterStates>(); 
 
 	Dictionary<string, AnimationState> dico = new Dictionary<string, AnimationState>(); 
+	Dictionary<string, CharacterStates> dico_c_states = new Dictionary<string, CharacterStates>(); 
 
 	public CharacterStates current_c_state; 
 
@@ -48,6 +70,7 @@ public class PersoShooter
 	int max_enumerator = 0; 
 
 
+	int debug_counter = 0; 
 
 	public PersoShooter(GameObject o, PersoFillerShooter pfs, Camera c)
 	{
@@ -57,19 +80,29 @@ public class PersoShooter
 		rb = o.GetComponent<Rigidbody>(); 
 		anim = o.GetComponent<Animator>(); 
 
-		Debug.Log("I am a PersoShooter"); 
-
 		FillFromFiller(pfs); 
 		FillDico();
 		InitiateImpulsion(); 
+		InitiateShooterStates(); 
 	}
 
+	void InitiateShooterStates()
+	{
+		current_c_state = c_states[0]; 
+	}
 
 	public void MAJ()
 	{
 		UpdateStates(); 
 		CheckPhysics(); 
 		CheckImpuslion(); 
+		CheckSpecialEffects();
+	}
+
+	void CheckSpecialEffects()
+	{
+		EffectIterator = (EffectIterator+1)%MaxEffectIterator; 
+		FXHolder[EffectIterator].Analyze(current_c_state, rb.velocity.magnitude); 
 	}
 
 	void UpdateStates()
@@ -91,16 +124,41 @@ public class PersoShooter
 				is_landing = false; 
 			}
 		}
+
 	}
 
 	void CheckState()
 	{
 		AnimationState current_state = states[states_enumerator];
-		anim.SetBool(current_state.name,current_state.state);
-		if(current_state.state)
-			current_state.state = false; 
+		// EnsurePassive(); //TODO ! FIGURE OUT HOW TO GET OUT OF THIS STATE 
 
-		CheckAllCorrespondances();
+		anim.SetBool(current_state.name,current_state.state);
+		// if(current_state.state)
+		// 	current_state.state = false; 
+		if(current_state.state)
+		{
+			if(!current_c_state.Passive)
+				current_state.state = false; 
+		}
+
+		CheckAllCorrespondances();	
+
+	}
+
+	void EnsurePassive()
+	{
+		if(current_c_state.Passive)
+		{
+			bool b = false; 
+			foreach(string s in current_c_state.Correspondances)
+			{
+				if(dico.ContainsKey(s))
+				{
+					dico[s].state = true; 
+				}
+			}
+		}
+
 	}
 
 	void CheckPhysics()
@@ -156,18 +214,103 @@ public class PersoShooter
 
 	public void PlayerMove(float x, float y)
 	{
+
+		if(current_c_state.Name == "SuperFly")
+		{
+			SuperFlyMove(x,y);
+		}
+		else
+		{
+			 GroundMove(x,y); 
+		}
+		
+	}
+
+
+	void SuperFlyMove(float x, float y)
+	{
+
+
 		anim.SetFloat("X", x); 
 		anim.SetFloat("Y", y);
 
+		Move(transform.forward*StraightSpeed);
+		ApplyAdditionalForce(-y*transform.up*StraightSpeed*0.5f); 
+		RotateTowards(transform.forward +  transform.right*x, SuperFlyRotationSpeed); 
+
+	}
+
+	void GroundMove(float x, float y)
+	{
+		anim.SetFloat("X", x); 
+		anim.SetFloat("Y", y);
 		if(x*x + y*y > 0.1f)
 		{
 			// Debug.Log(new Vector3(x,y,0));
 			Vector3 direction = transform.forward*y + transform.right*x; 
 			// Debug.DrawRay(transform.position, direction*10, Color.red,1f); 
 			Move(direction.normalized*Speed); 
-			RotateTowards(CamToPlayer()); 
+			RotateTowards(CamToPlayer(), RotationSpeed); 
+			if(is_stepping)
+				is_stepping = !is_stepping; 
+		}
+		else
+		{
+			if(UseStep)
+				StepCamera(); 
+		}
+	}
+
+	void StepCamera()
+	{
+		if(!is_stepping)
+		{
+			Vector3 v = CamToPlayerParallel(); 
+			float a = Vector3.Angle(transform.forward, v); 
+			// Debug.Log(a); 
+
+			if(a > AngleBeforeStep)
+			{
+				is_stepping = true; 
+				// float d = (Vector3.Dot(transform.right, v) > 0) ? 1f: -1f; 
+				// StepTarget = transform.rotation*Quaternion.AngleAxis(d*AngleTarget, transform.up); 
+
+			}	
+		}
+		else
+		{
+			Vector3 v = CamToPlayerParallel(); 
+			float a = Vector3.Angle(transform.forward, v); 
+			// Debug.Log(a); 
+			if(a < MinAngleStep)
+				is_stepping = false; 
+
+			float d = (Vector3.Dot(transform.right, v) > 0) ? 1f: -1f; 
+			StepTarget = transform.rotation*Quaternion.AngleAxis(d*AngleTarget, transform.up); 
+			transform.rotation = Quaternion.Lerp(transform.rotation, StepTarget, StepSpeed*Time.deltaTime); 
+		}
+
+	}
+
+	public void ToggleSuperFly()
+	{
+		if(is_flying || current_c_state.Name == "Jump" || is_super_flying)
+		{
+			Debug.Log(current_c_state.Name); 
+			if(current_c_state.Name == "SuperFly")
+			{
+				Activate("ExitSuperFly"); 
+				is_super_flying = false; 
+			}
+			else
+			{
+				Activate("EnterSuperFly"); 
+				is_super_flying = true; 
+				TurnGravityOff(); 
+			}
 			
 		}
+		
 	}
 
 	Vector3 CamToPlayer()
@@ -177,18 +320,25 @@ public class PersoShooter
 		return v.normalized; 
 	}
 
+	Vector3 CamToPlayerParallel()
+	{
+		Vector3 v = transform.position - cam.transform.position; 
+		v.y = transform.forward.y;  
+		return v.normalized; 
+	}
+
 	void Move(Vector3 v)
 	{
 		rb.AddForce(v); 
 	}
 
-	void RotateTowards(Vector3 v)
+	void RotateTowards(Vector3 v, float s)
 	{
 		float angle = Vector3.Angle(transform.forward,v); 
 		angle = (Vector3.Dot(transform.right, v) <0) ? -angle: angle; 
 		Quaternion target = transform.rotation*Quaternion.AngleAxis(angle, transform.up); 
 
-		transform.rotation = Quaternion.Lerp(transform.rotation, target, RotationSpeed*Time.deltaTime); 
+		transform.rotation = Quaternion.Lerp(transform.rotation, target, s*Time.deltaTime); 
 	}
 
 	public void Jump(float delay = 0.1f)
@@ -279,6 +429,11 @@ public class PersoShooter
 			dico.Add(s.name, s); 
 		}
 
+		foreach(CharacterStates c in c_states)
+		{
+			dico_c_states.Add(c.Name, c); 
+		}
+
 		max_enumerator = states.Count; 
 	}
 
@@ -304,6 +459,7 @@ public class PersoShooter
 				}
 			}
 			c.Current = b; 
+			// c.Reset(); 
 		}	
 	}
 
@@ -331,12 +487,31 @@ public class PersoShooter
 		DashForce = p.DashForce; 
 		DashTime = p.DashTime; 
 
+		UseStep = p.UseStep; 
+		AngleBeforeStep = p.AngleBeforeStep;
+		StepSpeed = p.StepSpeed;
+		AngleTarget = p.AngleTarget;
+		MinAngleStep = p.MinAngleStep; 
+
 		AdditionalGravity = p.AdditionalGravity; 
 		DragFly = p.DragFly;
 		DragGround = p.DragGround;
 
 		LandingSpeed = p.LandingSpeed; 
 		MinSpeedLandingRatio = p.MinSpeedLandingRatio; 
+
+		UseSuperFly = p.UseSuperFly; 
+		StraightSpeed = p.StraightSpeed; 
+		SuperFlyRotationSpeed = p.SuperFlyRotationSpeed; 
+		VerticalRatio = p.VerticalRatio; 
+
+		UseSpecialEffects = p.UseSpecialEffects;
+		if(UseSpecialEffects)
+		{
+			FXHolder = p.FXHolder;
+			MaxEffectIterator = FXHolder.Count; 
+		}
+
 
 		height = G.GetComponent<Collider>().bounds.size.y/2; 
 	}
