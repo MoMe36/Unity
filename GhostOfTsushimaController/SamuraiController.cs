@@ -38,7 +38,6 @@ public class SamuraiController : MonoBehaviour {
 	{
 		if(DEBUG)
 		{	
-
 			DEBUG = !DEBUG; 
 		}
 	}

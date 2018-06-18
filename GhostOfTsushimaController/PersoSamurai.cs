@@ -53,6 +53,7 @@ public class PersoSamurai
 	Dictionary<string, CharacterStates> dico_c_states = new Dictionary<string, CharacterStates>(); 
 
 	public CharacterStates current_c_state; 
+	public string real_current_state; 
 
 	int states_enumerator = 0; 
 	int max_enumerator = 0; 
@@ -78,6 +79,7 @@ public class PersoSamurai
 	void InitiateStates()
 	{
 		current_c_state = c_states[0]; 
+		real_current_state = states[0].name; 
 	}
 
 	public void MAJ()
@@ -98,9 +100,11 @@ public class PersoSamurai
 	{
 
 		impulsion_enumerator = (impulsion_enumerator+1)%max_impulsion_enumerator; 
-		bool ac = impulsionHolder[impulsion_enumerator].Analyze(current_c_state); 
+		bool ac = impulsionHolder[impulsion_enumerator].Analyze(real_current_state); 
+		// ac = false; 
+		// Debug.Log(ac);
 		if(ac)
-			impulsion = impulsionHolder[impulsion_enumerator].GetClone(); 
+			impulsion = impulsionHolder[impulsion_enumerator].GetClone(transform); 
 
 
 		bool b = impulsion.Count(); 
@@ -114,6 +118,8 @@ public class PersoSamurai
 		states_enumerator = (states_enumerator+1)%max_enumerator;
 		CheckState();
 		CheckCounters(); 
+
+		// Debug.Log(real_current_state);
 	}
 
 	void CheckCounters()
@@ -306,7 +312,8 @@ public class PersoSamurai
 				if(anim.GetCurrentAnimatorStateInfo(0).IsName(s))
 				{
 					b = true; 
-					current_c_state = c; 
+					current_c_state = c;
+					real_current_state = s;  
 				}
 			}
 			c.Current = b; 
