@@ -65,6 +65,7 @@ public class PersoShooter
 	Dictionary<string, CharacterStates> dico_c_states = new Dictionary<string, CharacterStates>(); 
 
 	public CharacterStates current_c_state; 
+	string real_current_state = ""; 
 
 	int states_enumerator = 0; 
 	int max_enumerator = 0; 
@@ -83,10 +84,10 @@ public class PersoShooter
 		FillFromFiller(pfs); 
 		FillDico();
 		InitiateImpulsion(); 
-		InitiateShooterStates(); 
+		InitiateStates(); 
 	}
 
-	void InitiateShooterStates()
+	void InitiateStates()
 	{
 		current_c_state = c_states[0]; 
 	}
@@ -102,7 +103,7 @@ public class PersoShooter
 	void CheckSpecialEffects()
 	{
 		EffectIterator = (EffectIterator+1)%MaxEffectIterator; 
-		FXHolder[EffectIterator].Analyze(current_c_state, rb.velocity.magnitude); 
+		FXHolder[EffectIterator].Analyze(real_current_state, rb.velocity.magnitude); 
 	}
 
 	void UpdateStates()
@@ -456,6 +457,7 @@ public class PersoShooter
 				{
 					b = true; 
 					current_c_state = c; 
+					real_current_state = s;  
 				}
 			}
 			c.Current = b; 

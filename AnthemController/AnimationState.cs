@@ -13,4 +13,6 @@ public class AnimationState {
 		name = s; 
 		state = false; 
 	}
+
+
 }
