@@ -22,9 +22,10 @@ public class SamuraiController : MonoBehaviour {
 		float x = Input.GetAxis("Horizontal"); 
 		float y = Input.GetAxis("Vertical"); 
 
-		// me.PlayerMove(x,y); 
+		me.PlayerMove(x,y); 
 		
 		
+		// if(Input.GetKeyDown(KeyCode.Space))
 		if(Input.GetButtonDown("XButton"))
 			me.HitActivation();
 		if(Input.GetButtonDown("BButton"))

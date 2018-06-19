@@ -21,6 +21,10 @@ public class PersoSamurai
 	public float DragFly = 1f;
 	public float DragGround = 1f; 
 
+	bool UseAdditionalGravity; 
+	bool is_grounded; 
+	bool is_flying;
+
 	DelayedImpulsion impulsion; 
 
 	float RotationTowardsEnnemySpeed = 1f; 
@@ -38,6 +42,8 @@ public class PersoSamurai
 	float dodge_counter = 0f;
 
 	List<ImpulsionHolder> impulsionHolder; 
+	List <HitBox> Hitboxes; 
+	List <AttackHitBox> AttackHitboxes; 
 
 	public bool UseSpecialEffects = false; 
 	public List<NamedEffect> FXHolder = new List<NamedEffect>(); 
@@ -57,8 +63,15 @@ public class PersoSamurai
 
 	int states_enumerator = 0; 
 	int max_enumerator = 0; 
+
 	int impulsion_enumerator = 0; 
 	int max_impulsion_enumerator = 0; 
+
+	int hitbox_enumerator = 0; 
+	int max_hitbox_enumerator = 0; 
+
+	int attack_hitbox_enumerator = 0; 
+	int max_attack_hitbox_enumerator = 0; 
 
 	public GameObject Ennemy = null; 
 
@@ -85,7 +98,8 @@ public class PersoSamurai
 	public void MAJ()
 	{
 		UpdateStates(); 
-		CheckImpuslion(); 
+		CheckImpulsion(); 
+		CheckPhysics(); 
 		if(UseSpecialEffects)
 			CheckSpecialEffects();
 	}
@@ -93,10 +107,56 @@ public class PersoSamurai
 	void CheckSpecialEffects()
 	{
 		EffectIterator = (EffectIterator+1)%MaxEffectIterator; 
-		FXHolder[EffectIterator].Analyze(current_c_state, rb.velocity.magnitude); 
+		FXHolder[EffectIterator].Analyze(real_current_state, rb.velocity.magnitude); 
 	}
 
-	void CheckImpuslion()
+	void CheckPhysics()
+	{
+		bool result = false; 
+
+		Ray ray = new Ray(transform.position, -transform.up); 
+		RaycastHit hit; 
+
+		// Debug.DrawRay(ray.origin,ray.direction*height,Color.red,1.0f); 
+
+		if(Physics.Raycast(ray, out hit, height*1.05f))
+		{
+			result = true; 
+		}
+
+		if(result)
+		{
+			if(!is_grounded)
+			{
+				is_grounded = true; 
+				anim.SetTrigger("TouchedGround"); 
+				// Debug.Log("Landing");
+				rb.drag = DragGround; 
+			}
+		}
+
+		else
+		{
+			if(is_grounded)
+			{
+				anim.SetTrigger("Fall");
+				anim.ResetTrigger("TouchedGround"); 
+				is_grounded = false;
+				// Debug.Log("Falling");
+				rb.drag = DragFly; 
+			}
+		}
+
+		// Now speed
+
+		rb.velocity = Vector3.ClampMagnitude(rb.velocity, MaxVelocity);
+		// Debug.Break();
+
+		if(!is_grounded && UseAdditionalGravity && !is_flying)
+			ApplyAdditionalForce(-transform.up*AdditionalGravity);
+	}
+
+	void CheckImpulsion()
 	{
 
 		impulsion_enumerator = (impulsion_enumerator+1)%max_impulsion_enumerator; 
@@ -118,8 +178,28 @@ public class PersoSamurai
 		states_enumerator = (states_enumerator+1)%max_enumerator;
 		CheckState();
 		CheckCounters(); 
-
+		CheckHitboxes(); 
 		// Debug.Log(real_current_state);
+	}
+
+	void CheckHitboxes()
+	{
+		hitbox_enumerator = (hitbox_enumerator+1)%max_hitbox_enumerator; 
+		if(Hitboxes[hitbox_enumerator].Active)
+		{
+			Activate(Hitboxes[hitbox_enumerator].TargetAnimation); 
+			Hitboxes[hitbox_enumerator].Active = false; 
+		}
+
+		attack_hitbox_enumerator = (attack_hitbox_enumerator+1)%max_attack_hitbox_enumerator; 
+		if(AttackHitboxes[attack_hitbox_enumerator].ActiveStates.Contains(real_current_state))
+		{
+			AttackHitboxes[attack_hitbox_enumerator].Active = true; 
+		}
+		else
+		{
+			AttackHitboxes[attack_hitbox_enumerator].Active = false; 
+		}
 	}
 
 	void CheckCounters()
@@ -333,6 +413,7 @@ public class PersoSamurai
 		DashForce = p.DashForce; 
 		DashTime = p.DashTime; 
 		RotationTowardsEnnemySpeed = p.RotationTowardsEnnemySpeed; 
+		UseAdditionalGravity = p.UseAdditionalGravity; 
 
 		DodgeImpulsionStrength = p.DodgeImpulsionStrength;
 		DodgeImpulsionDuration = p.DodgeImpulsionDuration;
@@ -345,6 +426,12 @@ public class PersoSamurai
 		DodgeCounter = p.DodgeCounter; 
 
 		impulsionHolder = p.impulsionHolder; 
+
+		Hitboxes = p.Hitboxes; 
+		AttackHitboxes = p.AttackHitboxes; 
+
+		max_attack_hitbox_enumerator = AttackHitboxes.Count; 
+		max_hitbox_enumerator = Hitboxes.Count; 
 
 		UseSpecialEffects = p.UseSpecialEffects;
 		if(UseSpecialEffects)
