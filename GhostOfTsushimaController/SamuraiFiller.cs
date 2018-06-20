@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class SamuraiFiller
 {
-	[Header("Physics Attributes")]
+	[Header("\t\tPhysics Attributes")]
 	public float Speed = 200; 
 	public float RotationSpeed = 10; 
 	public float JumpForce = 5; 
@@ -17,7 +17,9 @@ public class SamuraiFiller
 	public float DragGround = 1f; 
 	public bool UseAdditionalGravity; 
 
-	[Header("Specific Attributes")]
+	[Space(50)]
+
+	[Header("\t\tSpecific Attributes")]
 	public float RotationTowardsEnnemySpeed = 1f;
 	public float DodgeImpulsionStrength = 0.5f; 
 	public float DodgeImpulsionDuration = 0.1f; 
@@ -26,23 +28,37 @@ public class SamuraiFiller
 	public float HitImpulsionDuration = 0.1f;
 	public float HitImpulsionDelay = 0.1f; 
 
-	public float HitCounter = 0.1f; 
-	public float DodgeCounter = 0.1f; 
+	[Space(20)]
+	[Header("\t\tDash Attributes")]
+	public bool UseDash = true; 
+	public float DashSpeed = 5f; 
+	public float DashDistance = 5;
+	public float DashDuration = 0.4f; 
 
 
-	[Header("Impulsions during actions")]
+	[Space(50)]
+
+	[Header("\t\tImpulsions during actions")]
 	public List<ImpulsionHolder> impulsionHolder = new List<ImpulsionHolder>(); 
 
-	[Header("Hitboxes")]
+	[Space(50)]
+
+	[Header("\t\tHitboxes")]
 	public List<HitBox> Hitboxes = new List<HitBox>(); 
 	public List <AttackHitBox> AttackHitboxes = new List <AttackHitBox> (); 
 
-	[Header("Special Effects")]
+	[Space(50)]
+
+	[Header("\t\tSpecial Effects")]
 	public bool UseSpecialEffects = true; 
 	public List<NamedEffect> FXHolder = new List<NamedEffect>(); 
 
-	[Header("Animation Parameters")]
+	[Space(50)]
+
+	[Header("\t\tAnimation Parameters")]
 	public List <AnimationState> AnimationStates = new List<AnimationState>(); 
+
+	[Space(30)]
 	public List <CharacterStates> CharacterState = new List<CharacterStates>(); 
 
 }

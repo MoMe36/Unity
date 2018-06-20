@@ -36,10 +36,14 @@ public class PersoSamurai
 	float DodgeImpulsionDelay = 0.1f; 
 	float HitImpulsionDelay = 0.1f; 
 
-	float HitCounter = 0.1f; 	
-	float DodgeCounter = 0.1f; 
-	float hit_counter = 0f;
-	float dodge_counter = 0f;
+	public bool UseDash;
+	public float DashSpeed;
+	public float DashDistance;
+	public float DashDuration;
+
+	bool is_dashing = false; 
+	Vector3 DashTarget; 
+	float DashCounter;
 
 	List<ImpulsionHolder> impulsionHolder; 
 	List <HitBox> Hitboxes; 
@@ -100,6 +104,7 @@ public class PersoSamurai
 		UpdateStates(); 
 		CheckImpulsion(); 
 		CheckPhysics(); 
+		CheckDash(); 
 		if(UseSpecialEffects)
 			CheckSpecialEffects();
 	}
@@ -108,6 +113,49 @@ public class PersoSamurai
 	{
 		EffectIterator = (EffectIterator+1)%MaxEffectIterator; 
 		FXHolder[EffectIterator].Analyze(real_current_state, rb.velocity.magnitude); 
+	}
+
+	void CheckDash()
+	{
+		if(UseDash)
+		{
+			if(is_dashing)
+			{
+				DashCounter -= Time.deltaTime; 
+				if(DashCounter <= 0f)
+				{
+					is_dashing = false; 
+				}
+				// transform.position += transform.forward*dashspeed*Time.deltaTime;
+				transform.position = Vector3.Lerp(transform.position, DashTarget, Time.deltaTime*DashSpeed);
+			}
+		}
+	}
+
+	public void ActivateDash()
+	{
+		if(!is_dashing)
+		{
+			is_dashing = true; 
+			DashCounter = DashDuration; 
+			Activate("Dash"); 
+			GetDashTarget(); 
+		}
+	}
+
+	void GetDashTarget()
+	{
+		Ray ray = new Ray(transform.position, transform.forward); 
+		RaycastHit hit; 
+
+		if(Physics.Raycast(ray, out hit, DashDistance))
+		{
+			DashTarget = transform.position + transform.forward*0.5f*hit.distance; 
+		}
+		else
+		{
+			DashTarget = transform.position + transform.forward*DashDistance;
+		}
 	}
 
 	void CheckPhysics()
@@ -177,9 +225,7 @@ public class PersoSamurai
 	{
 		states_enumerator = (states_enumerator+1)%max_enumerator;
 		CheckState();
-		CheckCounters(); 
 		CheckHitboxes(); 
-		// Debug.Log(real_current_state);
 	}
 
 	void CheckHitboxes()
@@ -202,31 +248,14 @@ public class PersoSamurai
 		}
 	}
 
-	void CheckCounters()
-	{
-		if(dodge_counter >= 0f)
-			dodge_counter -= Time.deltaTime; 
-		if(hit_counter >= 0f)
-			hit_counter -= Time.deltaTime; 
-	}
-
 	public void HitActivation()
 	{
-		// Debug.Log("inse"); 
-		if(hit_counter <= 0f)
-		{	
+			
 			bool b = false; 
 			if(current_c_state.FightingState)
 				b = Activate("Follow"); 
 			else
 				b = Activate("Hit");
-			
-			// if(b)
-			// {
-			// 	CounterAndImpulsion(transform.forward, HitImpulsionStrength, HitImpulsionDelay, HitImpulsionDuration, hit_counter, HitCounter);
-			// }
-			
-		}
 	}
 
 	void CounterAndImpulsion(Vector3 v, float f, float de, float du, float c, float max_c)
@@ -237,30 +266,20 @@ public class PersoSamurai
 
 	public void Dodge(float x, float y)
 	{
-		if(dodge_counter <= 0f)
-		{
 			bool b = Activate("Dodge"); 
 			if(b)
 			{
 				float v = (x > 0f) ? 1f:0f; 
 				anim.SetFloat("DodgeDir",v); 
-				// if(b)
-				// {
-				// 	CounterAndImpulsion(transform.right*(v-0.5f)*2, DodgeImpulsionStrength, DodgeImpulsionDelay, DodgeImpulsionDuration, dodge_counter, DodgeCounter);
-				// }
 			}
-		}
 	}
 
 
 	void CheckState()
 	{
 		AnimationState current_state = states[states_enumerator];
-		// EnsurePassive(); //TODO ! FIGURE OUT HOW TO GET OUT OF THIS STATE 
 
 		anim.SetBool(current_state.name,current_state.state);
-		// if(current_state.state)
-		// 	current_state.state = false; 
 		if(current_state.state)
 		{
 			if(!current_c_state.Passive)
@@ -422,8 +441,10 @@ public class PersoSamurai
 		HitImpulsionStrength = p.HitImpulsionStrength;
 		HitImpulsionDelay = p.HitImpulsionDelay;
 
-		HitCounter = p.HitCounter; 
-		DodgeCounter = p.DodgeCounter; 
+		UseDash = p.UseDash; 
+		DashSpeed = p.DashSpeed; 
+		DashDistance = p.DashDistance; 
+		DashDuration = p.DashDuration; 
 
 		impulsionHolder = p.impulsionHolder; 
 
