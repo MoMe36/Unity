@@ -36,6 +36,10 @@ public class PersoSamurai
 	float DodgeImpulsionDelay = 0.1f; 
 	float HitImpulsionDelay = 0.1f; 
 
+	float TimeBetweenHits; 
+	float hit_counter = 0f; 
+	bool hit_ready = true; 
+
 	public bool UseDash;
 	public float DashSpeed;
 	public float DashDistance;
@@ -110,6 +114,17 @@ public class PersoSamurai
 		CheckDash(); 
 		if(UseSpecialEffects)
 			CheckSpecialEffects();
+		CheckCounters();
+	}
+
+	void CheckCounters()
+	{
+		if(!hit_ready)
+		{
+			hit_counter -= Time.deltaTime; 
+			if(hit_counter <= 0)
+				hit_ready = true; 
+		}
 	}
 
 	void CheckSpecialEffects()
@@ -256,32 +271,30 @@ public class PersoSamurai
 	public void HitActivation(string anim_name)
 	{
 		bool b = false; 
-		anim.SetBool("ExitBool", false);
-		// if(current_c_state.FightingState)
-		// 	b = Activate("Follow"); 
-		// else
-		// 	b = Activate(anim_name);
-		if(anim_name == LastAttackType)
+		if(hit_ready)
 		{
-			if(current_c_state.FightingState)
+			hit_ready = false; 
+			hit_counter = TimeBetweenHits; 
+			anim.SetBool("ExitBool", false);
+			
+			if(anim_name == LastAttackType)
 			{
-				// int coming_from =anim.GetInteger("ComingFrom"); 
-				b = Activate("Follow"); 
-				// anim.SetInteger("ComingFrom", (coming_from +1)%2); 
+				if(current_c_state.FightingState)
+				{
+					b = Activate("Follow"); 
+				}
+				else
+				{
+					b = Activate(anim_name);
+				}
 			}
 			else
 			{
-				// anim.SetInteger("ComingFrom", 0); 
 				b = Activate(anim_name);
+				LastAttackType = anim_name;
 			}
+
 		}
-		else
-		{
-			// anim.SetInteger("ComingFrom", 0); 
-			b = Activate(anim_name);
-			LastAttackType = anim_name;
-		}
-		// anim.SetBool("ExitBool", true); 
 	}
 
 	void CounterAndImpulsion(Vector3 v, float f, float de, float du, float c, float max_c)
@@ -471,6 +484,8 @@ public class PersoSamurai
 		DashSpeed = p.DashSpeed; 
 		DashDistance = p.DashDistance; 
 		DashDuration = p.DashDuration; 
+
+		TimeBetweenHits = p.TimeBetweenHits; 
 
 		UseImpulsionAction = p.UseImpulsionAction; 
 		UseHitboxes = p.UseHitboxes; 

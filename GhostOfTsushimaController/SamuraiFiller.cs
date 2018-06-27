@@ -29,6 +29,11 @@ public class SamuraiFiller
 	public float HitImpulsionDelay = 0.1f; 
 
 	[Space(20)]
+
+	[Header("\t\tHitAttributes")]
+	public float TimeBetweenHits = 0.15f; 
+
+	[Space(20)]
 	[Header("\t\tDash Attributes")]
 	public bool UseDash = true; 
 	public float DashSpeed = 5f; 

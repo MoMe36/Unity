@@ -7,13 +7,6 @@ public class SamuraiController : MonoBehaviour {
 	public bool DEBUG = false; 
 
 	[Space(50)]
-
-	[Header("\t\tTest hit frequency")]
-	public float HitFreq = 0.1f; 
-	public float hitcounter = 0f;
-	public bool ready = true;  
-
-	[Space(50)]
 	public GameObject Ennemi; 
 	public SamuraiFiller Filler; 
 	PersoSamurai me; 
@@ -35,35 +28,22 @@ public class SamuraiController : MonoBehaviour {
 
 		me.PlayerMove(x,y); 
 		
-		
-		CountHit(); 
-
-
-		if(ready)
-		{
-			
 			// if(Input.GetButtonDown("XButton"))
-			if(Input.GetKeyDown(KeyCode.E))
-			{
-				me.HitActivation("Hit");
-				ready = false;
-				hitcounter = HitFreq;
-			}
-			// if(Input.GetButtonDown("YButton"))
-			if(Input.GetKeyDown(KeyCode.R))
-			{
-				me.HitActivation("HitSV");
-				ready = false;
-				hitcounter = HitFreq;
-			}
-			// if(Input.GetButtonDown("BButton"))
-			if(Input.GetKeyDown(KeyCode.T))
-			{
-				me.HitActivation("HitSH");
-				ready = false;
-				hitcounter = HitFreq;
-			}
+		if(Input.GetKeyDown(KeyCode.E))
+		{
+			me.HitActivation("Hit");
 		}
+		// if(Input.GetButtonDown("YButton"))
+		if(Input.GetKeyDown(KeyCode.R))
+		{
+			me.HitActivation("HitSV");
+		}
+		// if(Input.GetButtonDown("BButton"))
+		if(Input.GetKeyDown(KeyCode.T))
+		{
+			me.HitActivation("HitSH");
+		}
+		// }
 		// if(Input.GetButtonDown("BButton"))
 		// 	me.Dodge(x,y); 
 
@@ -73,14 +53,6 @@ public class SamuraiController : MonoBehaviour {
 		// DashEffect(); 
 		DebugFunc(); 
 
-	}
-
-	void CountHit()
-	{
-		if(!ready)
-			hitcounter -= Time.deltaTime; 
-		if (hitcounter <= 0f)
-			ready = true; 
 	}
 
 	void DebugFunc()
