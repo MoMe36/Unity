@@ -45,9 +45,12 @@ public class PersoSamurai
 	Vector3 DashTarget; 
 	float DashCounter;
 
+	bool UseImpulsionAction; 
+	bool UseHitboxes;
 	List<ImpulsionHolder> impulsionHolder; 
 	List <HitBox> Hitboxes; 
 	List <AttackHitBox> AttackHitboxes; 
+	string LastAttackType = ""; 
 
 	public bool UseSpecialEffects = false; 
 	public List<NamedEffect> FXHolder = new List<NamedEffect>(); 
@@ -206,13 +209,13 @@ public class PersoSamurai
 
 	void CheckImpulsion()
 	{
-
-		impulsion_enumerator = (impulsion_enumerator+1)%max_impulsion_enumerator; 
-		bool ac = impulsionHolder[impulsion_enumerator].Analyze(real_current_state); 
-		// ac = false; 
-		// Debug.Log(ac);
-		if(ac)
-			impulsion = impulsionHolder[impulsion_enumerator].GetClone(transform); 
+		if(UseImpulsionAction)
+		{
+			impulsion_enumerator = (impulsion_enumerator+1)%max_impulsion_enumerator; 
+			bool ac = impulsionHolder[impulsion_enumerator].Analyze(real_current_state); 
+			if(ac)
+				impulsion = impulsionHolder[impulsion_enumerator].GetClone(transform); 
+		}
 
 
 		bool b = impulsion.Count(); 
@@ -225,7 +228,9 @@ public class PersoSamurai
 	{
 		states_enumerator = (states_enumerator+1)%max_enumerator;
 		CheckState();
-		CheckHitboxes(); 
+
+		if(UseHitboxes)
+			CheckHitboxes(); 
 	}
 
 	void CheckHitboxes()
@@ -248,14 +253,35 @@ public class PersoSamurai
 		}
 	}
 
-	public void HitActivation()
+	public void HitActivation(string anim_name)
 	{
-			
-			bool b = false; 
+		bool b = false; 
+		anim.SetBool("ExitBool", false);
+		// if(current_c_state.FightingState)
+		// 	b = Activate("Follow"); 
+		// else
+		// 	b = Activate(anim_name);
+		if(anim_name == LastAttackType)
+		{
 			if(current_c_state.FightingState)
+			{
+				// int coming_from =anim.GetInteger("ComingFrom"); 
 				b = Activate("Follow"); 
+				// anim.SetInteger("ComingFrom", (coming_from +1)%2); 
+			}
 			else
-				b = Activate("Hit");
+			{
+				// anim.SetInteger("ComingFrom", 0); 
+				b = Activate(anim_name);
+			}
+		}
+		else
+		{
+			// anim.SetInteger("ComingFrom", 0); 
+			b = Activate(anim_name);
+			LastAttackType = anim_name;
+		}
+		// anim.SetBool("ExitBool", true); 
 	}
 
 	void CounterAndImpulsion(Vector3 v, float f, float de, float du, float c, float max_c)
@@ -445,6 +471,9 @@ public class PersoSamurai
 		DashSpeed = p.DashSpeed; 
 		DashDistance = p.DashDistance; 
 		DashDuration = p.DashDuration; 
+
+		UseImpulsionAction = p.UseImpulsionAction; 
+		UseHitboxes = p.UseHitboxes; 
 
 		impulsionHolder = p.impulsionHolder; 
 

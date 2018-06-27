@@ -6,15 +6,14 @@ public class SamuraiController : MonoBehaviour {
 
 	public bool DEBUG = false; 
 
-	[Header("\t DashTesting")]
-	public bool is_dashing = false;
-	public float dashspeed = 5f; 
-	public float dashdistance = 3; 
-	public float dashduration = 1f; 
+	[Space(50)]
 
-	public float dashcounter = 0f; 
-	Vector3 DashTarget; 
+	[Header("\t\tTest hit frequency")]
+	public float HitFreq = 0.1f; 
+	public float hitcounter = 0f;
+	public bool ready = true;  
 
+	[Space(50)]
 	public GameObject Ennemi; 
 	public SamuraiFiller Filler; 
 	PersoSamurai me; 
@@ -37,58 +36,51 @@ public class SamuraiController : MonoBehaviour {
 		me.PlayerMove(x,y); 
 		
 		
-		// if(Input.GetKeyDown(KeyCode.Space))
-		if(Input.GetButtonDown("XButton"))
-			me.HitActivation();
-		if(Input.GetButtonDown("BButton"))
-			me.Dodge(x,y); 
+		CountHit(); 
 
-		if(Input.GetButtonDown("YButton"))
-			me.ActivateDash() ;
+
+		if(ready)
+		{
+			
+			// if(Input.GetButtonDown("XButton"))
+			if(Input.GetKeyDown(KeyCode.E))
+			{
+				me.HitActivation("Hit");
+				ready = false;
+				hitcounter = HitFreq;
+			}
+			// if(Input.GetButtonDown("YButton"))
+			if(Input.GetKeyDown(KeyCode.R))
+			{
+				me.HitActivation("HitSV");
+				ready = false;
+				hitcounter = HitFreq;
+			}
+			// if(Input.GetButtonDown("BButton"))
+			if(Input.GetKeyDown(KeyCode.T))
+			{
+				me.HitActivation("HitSH");
+				ready = false;
+				hitcounter = HitFreq;
+			}
+		}
+		// if(Input.GetButtonDown("BButton"))
+		// 	me.Dodge(x,y); 
+
+		// if(Input.GetButtonDown("YButton"))
+		// 	me.ActivateDash() ;
 
 		// DashEffect(); 
 		DebugFunc(); 
 
 	}
 
-	void LaunchDash()
+	void CountHit()
 	{
-		Debug.Log("Entering dash"); 
-		if(!is_dashing)
-		{
-			dashcounter = dashduration; 
-			is_dashing = true; 
-			GetDashPos();
-			me.Activate("Dash"); 
-		}
-	}
-	void DashEffect()
-	{
-		if(is_dashing)
-		{
-			dashcounter -= Time.deltaTime; 
-			if(dashcounter <= 0f)
-			{
-				is_dashing = false; 
-			}
-			// transform.position += transform.forward*dashspeed*Time.deltaTime;
-			transform.position = Vector3.Lerp(transform.position, DashTarget, Time.deltaTime*dashspeed);
-		}	
-	}
-
-	void GetDashPos()
-	{
-		Ray ray = new Ray(transform.position, transform.forward); 
-		RaycastHit hit; 
-
-		if(Physics.Raycast(ray, out hit, dashdistance))
-		{
-			DashTarget = transform.position + transform.forward*0.5f*hit.distance; 
-		}
-		else
-		{
-			DashTarget = transform.position + transform.forward*dashdistance;
-		}
+		if(!ready)
+			hitcounter -= Time.deltaTime; 
+		if (hitcounter <= 0f)
+			ready = true; 
 	}
 
 	void DebugFunc()
@@ -96,6 +88,7 @@ public class SamuraiController : MonoBehaviour {
 		if(DEBUG)
 		{	
 			DEBUG = !DEBUG; 
+			me = new PersoSamurai(gameObject, Filler, Camera.main); 
 		}
 	}
 }

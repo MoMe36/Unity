@@ -39,11 +39,13 @@ public class SamuraiFiller
 	[Space(50)]
 
 	[Header("\t\tImpulsions during actions")]
+	public bool UseImpulsionAction = false; 
 	public List<ImpulsionHolder> impulsionHolder = new List<ImpulsionHolder>(); 
 
 	[Space(50)]
 
 	[Header("\t\tHitboxes")]
+	public bool UseHitboxes = false; 
 	public List<HitBox> Hitboxes = new List<HitBox>(); 
 	public List <AttackHitBox> AttackHitboxes = new List <AttackHitBox> (); 
 
