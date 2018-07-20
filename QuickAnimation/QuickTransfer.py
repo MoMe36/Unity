@@ -109,19 +109,21 @@ def load_dict(curves, rig, name = 'LastAnimation'):
 	bpy.ops.pose.rot_clear()
 
 	set_frame(0)
-	bpy.ops.anim.keyframe_insert_menu(type = '__ACTIVE__', confirm_success = True)
+	bpy.ops.anim.keyframe_insert_menu(type = '__ACTIVE__', confirm_success = False)
 
 	for bone in concerned_bones:
 
-	# if bone in curves.keys():
-		frames_for_current_bone = curves[bone]['LocX']['frames']
-		rig.select_from_name(bone)
-		for f in frames_for_current_bone: 
-		    set_frame(f)
-		    try: 
-		        bpy.ops.anim.keyframe_insert_menu(type = '__ACTIVE__', confirm_success = True)
-		    except RuntimeError: 
-		        print('Bone : {} could not be found'.format(bone))
+		print(bone)
+
+		if bone in rig.all_bones:
+			frames_for_current_bone = curves[bone]['LocX']['frames']
+			rig.select_from_name(bone)
+			for f in frames_for_current_bone: 
+			    set_frame(f)
+			    try: 
+			        bpy.ops.anim.keyframe_insert_menu(type = '__ACTIVE__', confirm_success = False)
+			    except RuntimeError: 
+			        print('Bone : {} could not be found'.format(bone))
 
 	source_curves = rig.curves
 
