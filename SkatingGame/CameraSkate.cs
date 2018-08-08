@@ -68,101 +68,10 @@ public class CameraSkate : MonoBehaviour {
 		angleY += y; 
 
 		angleX = Mathf.Clamp(angleX,-45, 45);
-		Quaternion r = Quaternion.AngleAxis(angleX, Target.right)*Quaternion.AngleAxis(angleY,Target.up); 
+		Quaternion r = Quaternion.AngleAxis(angleX, transform.right)*Quaternion.AngleAxis(angleY,Vector3.up); 
 		return r; 
 	}
 
 	
 }
 
-
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-
-// public class TPSCam : MonoBehaviour
-// {
-	
-
-
-// 	public void Update()
-// 	{
-
-// 		if(FightMode)
-// 		{
-// 			FightBehaviour();
-// 		}
-// 		else
-// 		{
-// 			FreeBehaviour();
-// 		}
-		
-
-		
-// 	}
-// 	void FightBehaviour()
-// 	{
-// 		if(EnnemiTarget == null)
-// 		{
-// 			EnnemiTarget = Target.gameObject.GetComponent<SamuraiController>().Ennemi.transform; 
-// 			Debug.Log(EnnemiTarget);
-// 		}
-
-// 		GetFightingPosition(); 
-		
-
-// 	}
-
-// 	void LookFight(float r)
-// 	{
-// 		Vector3 v = (Target.position + EnnemiTarget.position)/2f; 
-// 		Vector3 look_target = new Vector3(); 
-
-// 		LookTarget = v*(1-r) + Target.position*r; 
-// 		// transform.LookAt(look_target);
-
-// 	}
-
-// 	void GetFightingPosition()
-// 	{
-
-// 		Vector3 far_offset = Target.right*FarOffset.x + Target.forward*FarOffset.z - Target.up*FarOffset.y; 
-// 		Vector3 close_offset = Target.right*CloseOffset.x + Target.forward*CloseOffset.z - Target.up*CloseOffset.y; 
-
-// 		float current_distance = (Target.position - EnnemiTarget.position).magnitude; 
-// 		current_distance = Mathf.Clamp(current_distance, DistancesMinMax.x, DistancesMinMax.y); 
-// 		float ratio = (current_distance - DistancesMinMax.x)/DistancesMinMax.y;
-
-// 		Vector3 optimal_pos_close = (Target.position + EnnemiTarget.position)/2f + close_offset; 
-// 		Vector3 optimal_pos_far =  Target.position + far_offset; 		 
-
-// 		// Debug.Log("Distance " + current_distance.ToString() + " Ratio " + ratio.ToString()); 
-// 		// transform.position = optimal_pos_close*(1-ratio) + ratio*optimal_pos_far;
-// 		// RatioLook = ratio; 
-// 		AdaptPosition(optimal_pos_close*(1-ratio) + ratio*optimal_pos_far,DampSpeed);
-// 		LookFight(ratio); 
-// 	}
-
-	
-
-// 	void RemoveEnnemi()
-// 	{
-// 		if(EnnemiTarget != null)
-// 		{
-// 			EnnemiTarget = null; 
-// 		}
-// 	}
-
-	
-
-// 	Vector3 ShootPos()
-// 	{
-// 		Vector3 pos = Target.position + Target.forward*ShootOffset.z + Target.right*ShootOffset.x + Target.up*ShootOffset.y;
-		
-// 		return pos; 
-// 	}
-
-	
-
-
-// }
