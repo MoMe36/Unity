@@ -1,16 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; 
 
 public class SkateControl : MonoBehaviour {
 
 	public Camera cam; 
 	public float Speed = 1f; 
 	public float RotatingSpeed = 1f; 
+	public float AdditionalGravity = 0.5f; 
 
 	public bool reverse = false; 
 
-	Rigidbody rb; 
+	[HideInInspector] public Rigidbody rb; 
 	InputProcessing inputs; 
 	float height; 
 
@@ -43,7 +45,9 @@ public class SkateControl : MonoBehaviour {
 		else
 		{
 			aerial = true; 
+			rb.velocity += Vector3.down*AdditionalGravity; 
 		}
+
 	}
 
 
@@ -64,8 +68,11 @@ public class SkateControl : MonoBehaviour {
 			planar_direction.y = 0; 
 			InputRotation = Quaternion.FromToRotation(planar_direction, adapted_direction); 
 
-			Vector3 Direction = InputRotation*transform.forward*Speed; 
-			rb.AddForce(Direction); 
+			if(!aerial)
+			{
+				Vector3 Direction = InputRotation*transform.forward*Speed; 
+				rb.AddForce(Direction); 
+			}
 		} 
 
 		ComputedRotation = PhysicsRotation*VelocityRotation*transform.rotation; 
@@ -75,36 +82,6 @@ public class SkateControl : MonoBehaviour {
 
 	}
 
-
-
-	void Move(Vector2 inputs)
-	{
-		// // Vector3 direction = new Vector3(d.x, 0, d.y); 
-		// Quaternion physics_r = G
-		// Quaternion final_rot = Quaternion.identity; 
-		// Quaternion velocity_rot = GetVelocityRot(); 
-
-		// if(inputs.magnitude > 0.1f)
-		// {
-		// 	Vector3 adapted_direction = CamToPlayer(inputs); 
-		// 	Vector3 planar_direction = transform.forward; 
-		// 	planar_direction.y = 0; 
-		// 	Quaternion input_rotation = Quaternion.FromToRotation(planar_direction, adapted_direction); 
-
-		// 	// final_rot = input_rotation*physics_r*velocity_rot*transform.rotation; // Marche bien ! 
-		// 	final_rot = physics_r*velocity_rot*transform.rotation; 
-
-		// 	Vector3 force_direction = input_rotation*transform.forward; 
-			
-		// 	rb.AddForce(force_direction*Speed); 
-			
-		// }
-		// else
-		// {
-		// 	final_rot =velocity_rot*physics_r*transform.rotation; // Marche bien !! 
-		// }
-		// transform.rotation = Quaternion.Lerp(transform.rotation, final_rot, RotatingSpeed*Time.deltaTime);
-	}
 
 	Quaternion GetVelocityRot()
 	{
