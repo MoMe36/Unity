@@ -9,14 +9,23 @@ public class SkateControl : MonoBehaviour {
 	public float Speed = 1f; 
 	public float RotatingSpeed = 1f; 
 	public float AdditionalGravity = 0.5f; 
+	public float LandingAccelerationRatio = 0.5f; 
+	
 
 	public bool reverse = false; 
 
 	[HideInInspector] public Rigidbody rb; 
 	InputProcessing inputs; 
+	SkateAnim anim; 
 	float height; 
 
 	public bool aerial;
+
+	[HideInInspector] public Quaternion PhysicsRotation; 
+	[HideInInspector] public Quaternion VelocityRotation; 
+	[HideInInspector] public Quaternion InputRotation; 
+	[HideInInspector] public Quaternion ComputedRotation;
+
 	// Use this for initialization
 	void Start () {
 
@@ -30,6 +39,7 @@ public class SkateControl : MonoBehaviour {
 
 		Vector2 direction = inputs.GetDirection();
 		SkaterMove(direction); 
+		
 	}
 
 
@@ -40,6 +50,10 @@ public class SkateControl : MonoBehaviour {
 
 		if(Physics.Raycast(ray, out hit, 1.05f*height))
 		{
+			if(aerial)
+			{
+				VelocityOnLanding(); 
+			}
 			aerial = false; 
 		}
 		else
@@ -50,15 +64,25 @@ public class SkateControl : MonoBehaviour {
 
 	}
 
+	void VelocityOnLanding()
+	{
+		float magn_vel = rb.velocity.magnitude;
+		Vector3 new_vel = rb.velocity; 
+		new_vel.y = 0; 
+		new_vel = new_vel.normalized*magn_vel;
+
+		rb.velocity +=  LandingAccelerationRatio*new_vel; 
+
+	}
+
 
 	void SkaterMove(Vector2 inputs)
 	{
-	
-
-		Quaternion PhysicsRotation = aerial ? Quaternion.identity : GetPhysicsRotation(); // Rotation according to ground normal 
-		Quaternion VelocityRotation = GetVelocityRot(); 
-		Quaternion InputRotation = Quaternion.identity; 
-		Quaternion ComputedRotation = Quaternion.identity;
+		
+		PhysicsRotation = aerial ? Quaternion.identity : GetPhysicsRotation(); // Rotation according to ground normal 
+		VelocityRotation = GetVelocityRot(); 
+		InputRotation = Quaternion.identity; 
+		ComputedRotation = Quaternion.identity;
 
 
 		if(inputs.magnitude > 0.1f)
@@ -77,12 +101,9 @@ public class SkateControl : MonoBehaviour {
 
 		ComputedRotation = PhysicsRotation*VelocityRotation*transform.rotation; 
 		transform.rotation = Quaternion.Lerp(transform.rotation, ComputedRotation, RotatingSpeed*Time.deltaTime); 
-
-
-
 	}
 
-
+	
 	Quaternion GetVelocityRot()
 	{
 		Vector3 vel = rb.velocity;
@@ -112,11 +133,6 @@ public class SkateControl : MonoBehaviour {
 		return Quaternion.FromToRotation(transform.up, target_vec); 
 	}
 
-	void Rotate(Vector3 d)
-	{
-
-	}
-
 	Vector3 CamToPlayer(Vector2 d)
 	{
 		Vector3 cam_to_player = transform.position - cam.transform.position; 
@@ -135,7 +151,7 @@ public class SkateControl : MonoBehaviour {
 		// VelocityRotation = Quaternion.identity; 
 		rb = GetComponent<Rigidbody>(); 
 		inputs = GetComponent<InputProcessing>() ; 
-
+		anim = GetComponent<SkateAnim>(); 
 		height = GetComponent<Collider>().bounds.size.y/2f; 
 	}
 }
