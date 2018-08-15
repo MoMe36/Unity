@@ -5,6 +5,7 @@ using UnityEngine;
 public class BoxerModularController : MonoBehaviour {
 
 	InputsBoxer inputs; 
+	AIProto ai; 
 	BoxerMoveController move; 
 	BoxerFightController fight; 
 
@@ -14,7 +15,10 @@ public class BoxerModularController : MonoBehaviour {
 		inputs = GetComponent<InputsBoxer>(); 
 		move = GetComponent<BoxerMoveController>();
 		fight = GetComponent<BoxerFightController>();
-		
+		if(!inputs.enabled)
+		{
+			ai = GetComponent<AIProto>(); 
+		}
 	}
 	
 	// Update is called once per frame
@@ -22,6 +26,13 @@ public class BoxerModularController : MonoBehaviour {
 
 		ParsePlayerInputs(); 
 		
+	}
+
+
+	public void IAOrder(Command ia_command)
+	{
+		move.PlayerMove(ia_command.Direction, ia_command.Dash); 
+		fight.Act(ia_command.Left, ia_command.Right, ia_command.Direct, ia_command.Hook, ia_command.Upper, ia_command.Dodge); 
 	}
 
 	void ParsePlayerInputs()
