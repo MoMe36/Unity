@@ -8,6 +8,8 @@ public class NodeEditor : EditorWindow {
 	private List<Node> nodes; 
 	private List<Connection> connections; 
 
+	private GUISkin skin; 
+
 	private GUIStyle nodeStyle; 
 	private GUIStyle decision_style; 
 	private GUIStyle action_style; 
@@ -24,12 +26,9 @@ public class NodeEditor : EditorWindow {
 		NodeEditor window = GetWindow<NodeEditor>(); 
 		window.titleContent = new GUIContent("Node editor"); 
 		window.minSize = new Vector2(1200,1000); 
-
-		// if(nodes == null)
-		// {
-		
-		// }
 	}
+
+
 
 	private void InitiateTree()
 	{
@@ -41,10 +40,18 @@ public class NodeEditor : EditorWindow {
 
 	private void OnEnable()
 	{
-		// nodeStyle = new GUIStyle(); 
-		// nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node5.png") as Texture2D;
-		// nodeStyle.border = new RectOffset(12,12,12,12); 
+		LoadSkin(); 
+		LoadStyles(); 
+		InitiateTree(); 
+	}
 
+	private void LoadSkin()
+	{
+		skin = Resources.Load<GUISkin>("FirstSkin"); 
+	}
+
+	private void LoadStyles()
+	{
 		background_texture = new Texture2D(1,1, TextureFormat.RGBA32, false); 
 		background_texture.SetPixel(0,0, new Color(0.25f ,0.25f,0.25f,1f)); 
 		background_texture.Apply(); 
@@ -60,15 +67,13 @@ public class NodeEditor : EditorWindow {
 		editing_style = new GUIStyle(); 
 		editing_style.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
 		editing_style.border = new RectOffset(12,12,12,12); 
-
-		InitiateTree(); 
 	}
 
 	private void OnGUI()
 	{
 		DrawBackground(); 
 		DrawLines(); 
-		DrawNodes(); 
+		DrawNodes(skin); 
 		DrawButtons(); 
 		ProcessNodeEvents(Event.current); 
 		ProcessEvents(Event.current); 
@@ -83,22 +88,6 @@ public class NodeEditor : EditorWindow {
 			CreateTree(); 
 		if(GUI.Button(new Rect(1100, 950, 250 ,45),"Simple init" ))
 			InitializeToSimple(); 
-
-		if(GUI.Button(new Rect(950, 950, 250 ,45),"Test" ))
-			TestGen(); 
-	}
-
-	private void TestGen()
-	{
-		MyIntSO my_int = ScriptableObject.CreateInstance<MyIntSO>();
-
-		AssetDatabase.CreateAsset(my_int, "Assets/TestsScripts/my_int.asset");
-        AssetDatabase.SaveAssets();
-
-        EditorUtility.FocusProjectWindow();
-
-        Selection.activeObject = my_int;
-
 	}
 
 	private void InitializeToSimple()
@@ -162,36 +151,23 @@ public class NodeEditor : EditorWindow {
 			counter_node += 1; 
 		}
 
-		// Debug.Log("Dict analysis"); 
 		foreach(Node n in nodes)
 		{
 			if(n.decision_type)
 			{
 
-				// Debug.Log("Current node is " + mapping[n].ToString()); 
-				// Debug.Log("True node is: " + mapping[n.my_true_node].ToString());
-				// Debug.Log("False node is: " + mapping[n.my_false_node].ToString()); 
 
 				mapping[n].true_node = gen_mapping[n.my_true_node]; 
 				mapping[n].false_node = gen_mapping[n.my_false_node]; 
-				// Debug.Log(mapping[n]); 
 			}
 		}
 
 		foreach(DTNode d in mapping.Values)
 		{
-			// Debug.Log("Adding " + d.ToString() + " to transalted_nodes"); 
 			translated_nodes.Add(d); 
 		}
 		my_dt.nodes = translated_nodes; 
-		// my_dt.genealogy = gen_mapping; 
-		// Debug.Log("Final test"); 
-		// foreach(DTNode test_node in my_dt.nodes)
-		// {
-		// 	Debug.Log(test_node); 
-		// }
 
-		// Debug.Log(my_dt.genealogy.Count); 
 
 		AssetDatabase.CreateAsset(my_dt, "Assets/ProbabilisticDecisionTree/DTFromCustom.asset");
         AssetDatabase.SaveAssets();
@@ -202,91 +178,27 @@ public class NodeEditor : EditorWindow {
 
 	}
 
-	// private void CreateTree()
-	// {
-	// 	DecisionTree my_dt = ScriptableObject.CreateInstance<DecisionTree>();
-
-	// 	Dictionary<Node, DecisionTreeNode> mapping = new Dictionary<Node, DecisionTreeNode>(); 
-	// 	List<DecisionTreeNode> translated_nodes = new List<DecisionTreeNode>(); 
-
-	// 	int node_counter = 0; 
-	// 	foreach(Node n in nodes)
-	// 	{
-	// 		if(n.decision_type)
-	// 		{
-	// 			Decision current_decision = new Decision();
-	// 			current_decision.state_value_to_test = n.IndexToConsider; 
-	// 			current_decision.test_value = n.TestValue; 
-	// 			// Debug.Log("Node: " + node_counter.ToString() + " " + current_decision.ToString()); 
-	// 			mapping.Add(n, current_decision); 
-	// 		}
-	// 		else
-	// 		{
-	// 			DecisionTreeAction current_action = new DecisionTreeAction(); 
-	// 			current_action.actions = n.prob_actions; 
-	// 			current_action.Normalize(); 
-	// 			// Debug.Log("Node: " + node_counter.ToString() + " " + current_action.ToString()); 
-	// 			mapping.Add(n, current_action); 
-	// 		}
-
-	// 		node_counter += 1; 
-	// 	}
-
-
-	// 	foreach(Node n in nodes)
-	// 	{
-	// 		if(n.decision_type)
-	// 		{
-	// 			mapping[n].true_node = mapping[n.my_true_node]; 
-	// 			mapping[n].false_node = mapping[n.my_false_node]; 
-	// 		}
-	// 	}
-
-	// 	foreach(DecisionTreeNode d in mapping.Values)
-	// 	{
-	// 		translated_nodes.Add(d); 
-	// 	}
-
-	// 	// Debug.Log("Translated nodes of size " + translated_nodes.Count); 
-	// 	// Debug.Log(translated_nodes); 
-	// 	// Debug.Log(translated_nodes[0].GetType()); 
-	// 	// Debug.Log(translated_nodes[1].GetType()); 
-	// 	// Debug.Log(translated_nodes[2].GetType()); 
-	// 	// my_dt.SetNodes(translated_nodes); 
-	// 	my_dt.nodes = translated_nodes; 
-
-	// 	// Debug.Log(my_dt.nodes[0].GetType()); 
-	// 	// Debug.Log(my_dt.nodes[1].GetType()); 
-	// 	// Debug.Log(my_dt.nodes[2].GetType()); 
-
- //        AssetDatabase.CreateAsset(my_dt, "Assets/ProbabilisticDecisionTree/DTFromCustom.asset");
- //        AssetDatabase.SaveAssets();
-
- //        EditorUtility.FocusProjectWindow();
-
- //        Selection.activeObject = my_dt;
-	// }
-
 	private void DrawBackground()
 	{
 		// GUI.color = Color.black; 
  		GUI.DrawTexture(new Rect(0, 0, maxSize.x, maxSize.y) , background_texture, 
  			ScaleMode.StretchToFill);
 
- 		float nb_div_x = 15f; 
- 		float distance_x = maxSize.x/nb_div_x; 
- 		float distance_y = maxSize.y/nb_div_x; 
+ 		float nb_div_x = 10f; 
+ 		float nb_div_y = 5f; 
+ 		float distance_x = Screen.width/nb_div_x; 
+ 		float distance_y = Screen.height/nb_div_y; 
  		for(int i = 0; i<nb_div_x; i++)
  		{
  			Vector2 x1 = new Vector2(0, distance_x*i); 
- 			Vector2 x2 = new Vector2(maxSize.x, distance_x*i); 
+ 			Vector2 x2 = new Vector2(Screen.width, distance_x*i); 
 
  			Vector2 y1 = new Vector2(distance_y*i,0); 
- 			Vector2 y2 = new Vector2(distance_y*i, maxSize.y); 
+ 			Vector2 y2 = new Vector2(distance_y*i, Screen.height); 
  			Vector3 [] x_pos = new Vector3 [] {x1, x2}; 
  			Vector3 [] y_pos = new Vector3 [] {y1, y2}; 
- 			Handles.DrawAAPolyLine(1, x_pos);
- 			Handles.DrawAAPolyLine(1, y_pos); 
+ 			Handles.DrawAAPolyLine(2, x_pos);
+ 			Handles.DrawAAPolyLine(2, y_pos); 
  		}
 	}
 
@@ -301,13 +213,13 @@ public class NodeEditor : EditorWindow {
 		}
 	}
 
-	private void DrawNodes()
+	private void DrawNodes(GUISkin skin)
 	{
 		if(nodes != null)
 		{
 			foreach(Node n in nodes)
 			{
-				n.Draw(); 
+				n.Draw(skin); 
 			}
 		}
 	}
@@ -326,16 +238,16 @@ public class NodeEditor : EditorWindow {
 					else
 						ProcessContextMenu(e.mousePosition); 
 				}
-				else if(e.button == 0)
-				{
-					bool mouse_in_nodes; 
-					Node current_node; 
-					CheckMouseInNodes(e.mousePosition, out mouse_in_nodes, out current_node); 
-					if(mouse_in_nodes)
-					{
-						current_node.is_editing = !current_node.is_editing; 
-					}
-				}
+				// else if(e.button == 0)
+				// {
+				// 	bool mouse_in_nodes; 
+				// 	Node current_node; 
+				// 	CheckMouseInNodes(e.mousePosition, out mouse_in_nodes, out current_node); 
+				// 	if(mouse_in_nodes)
+				// 	{
+				// 		current_node.is_editing = !current_node.is_editing; 
+				// 	}
+				// }
 				break; 
 		}
 	}
@@ -518,24 +430,51 @@ public class Node
 		}
 	}
 
-	public void Draw()
+	public void Draw(GUISkin skin)
 	{
-		GUI.Box(rect, "", style); 
-		GUI.Label(rect, title); 
 
+		float handles_line_width = 5f; 
+		GUI.Box(rect, "", style); 
+		GUILayout.BeginArea(rect); 
+		title = GUILayout.TextField(title, skin.GetStyle("st1")); 
+
+		
+		GUILayout.EndArea(); 
+		DrawEditingToggle(); 
 		if(is_editing)
 		{
 			// Debug.Log(IndexToConsider); 
-
+			Handles.color = Color.red; 
 			if(decision_type)
-				DrawDecision(); 
+				DrawDecision(skin, handles_line_width); 
 			else
-				DrawAction(); 
+				DrawAction(skin, handles_line_width); 
 		}
+
+		
 
 	}	
 
-	public void DrawDecision()
+
+	public void DrawEditingToggle()
+	{
+		Color c = GUI.color; 
+		if(is_editing)
+			GUI.color = Color.red; 
+		else 
+			GUI.color = Color.green; 
+
+		string button_text = is_editing ? "X" : "O"; 
+		if(GUI.Button(new Rect(rect.position.x + 180, rect.position.y + 10, 15, 15), button_text))
+		{
+			Debug.Log("Pressed"); 
+			is_editing = !is_editing; 
+		}
+
+		GUI.color = c; 
+	}
+
+	public void DrawDecision(GUISkin skin, float lines_width)
 	{
 		Vector2 small_box_dim = new Vector2(80, 30); 
 		Vector2 small_box_decal = new Vector2(80, 60); 
@@ -544,7 +483,10 @@ public class Node
 		box_rect.center = rect.center + new Vector2(150, 50); 
 		box_rect.size = new Vector2(300,150); 
 
-		GUI.Box(box_rect, "", editing_style); 
+		Vector2 inter = new Vector2(rect.center.x, box_rect.center.y); 
+		Handles.DrawAAPolyLine(lines_width, new Vector3 []{box_rect.center, inter, rect.center});  
+
+		GUI.Box(box_rect, "", editing_style); 		
 
 		Rect index_rect = Rect.zero; 
 		index_rect.center = box_rect.center + new Vector2(small_box_decal.x/2, -3*small_box_decal.y/4); 
@@ -564,10 +506,13 @@ public class Node
 		label_text_value_rect.center +=  new Vector2(0, small_box_decal.y); 
 		EditorGUI.LabelField(label_text_value_rect, "Test value"); 
 
+		
+
+
 	}
 
 
-	public void DrawAction()
+	public void DrawAction(GUISkin skin, float lines_width)
 	{
 
 		Vector2 small_box_dim = new Vector2(80, 30); 
@@ -576,6 +521,9 @@ public class Node
 		Rect box_rect = Rect.zero; 
 		box_rect.center = rect.center + new Vector2(150, 50); 
 		box_rect.size = new Vector2(300,300); 
+
+		Vector2 inter = new Vector2(rect.center.x, box_rect.center.y); 
+		Handles.DrawAAPolyLine(lines_width, new Vector3 []{box_rect.center, inter, rect.center});
 
 		GUI.Box(box_rect, "", editing_style); 
 

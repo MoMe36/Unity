@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: DTFromCustom
+  m_EditorClassIdentifier: Assembly-CSharp::DecisionTree
+  nodes:
+  - Name: 
+    false_node: 2
+    true_node: 1
+    state_value_to_test: 0
+    test_value: 3
+    actions: []
+    decision_type: 1
+  - Name: 
+    false_node: 0
+    true_node: 0
+    state_value_to_test: 0
+    test_value: 0
+    actions:
+    - decision_id: dash
+      prob: 0.2
+    - decision_id: hit
+      prob: 1
+    decision_type: 0
+  - Name: 
+    false_node: 0
+    true_node: 0
+    state_value_to_test: 0
+    test_value: 0
+    actions:
+    - decision_id: dash
+      prob: 0.8
+    - decision_id: hit
+      prob: 1
+    decision_type: 0
