@@ -90,15 +90,14 @@ public class NodeEditor : EditorWindow {
 
 	private void TestGen()
 	{
-		// MyIntSO my_int = ScriptableObject.CreateInstance<MyIntSO>();
-		// my_int.value = 20; 
+		MyIntSO my_int = ScriptableObject.CreateInstance<MyIntSO>();
 
-		// AssetDatabase.CreateAsset(my_int, "Assets/TestsScripts/my_int.asset");
-  //       AssetDatabase.SaveAssets();
+		AssetDatabase.CreateAsset(my_int, "Assets/TestsScripts/my_int.asset");
+        AssetDatabase.SaveAssets();
 
-  //       EditorUtility.FocusProjectWindow();
+        EditorUtility.FocusProjectWindow();
 
-  //       Selection.activeObject = my_int;
+        Selection.activeObject = my_int;
 
 	}
 
@@ -106,6 +105,10 @@ public class NodeEditor : EditorWindow {
 	{
 		nodes[1].ChangeType(decision_style, action_style); 
 		nodes[2].ChangeType(decision_style, action_style); 
+
+		nodes[0].Name = "Decision ini"; 
+		nodes[1].Name = "A1"; 
+		nodes[2].Name = "A2"; 
 
 		ProbAction [] p1 = new ProbAction[3]; 
 		ProbAction [] p2 = new ProbAction[2]; 
@@ -130,68 +133,131 @@ public class NodeEditor : EditorWindow {
 
 	private void CreateTree()
 	{
-		DecisionTree my_dt = ScriptableObject.CreateInstance<DecisionTree>();
+		DecisionTree my_dt = ScriptableObject.CreateInstance<DecisionTree>(); 
+		Dictionary<Node, DTNode> mapping = new Dictionary<Node, DTNode>(); 
 
-		Dictionary<Node, DecisionTreeNode> mapping = new Dictionary<Node, DecisionTreeNode>(); 
-		List<DecisionTreeNode> translated_nodes = new List<DecisionTreeNode>(); 
+		List<DTNode> translated_nodes = new List<DTNode>(); 
 
-		int node_counter = 0; 
 		foreach(Node n in nodes)
 		{
+			DTNode current_node = new DTNode(); 
+			current_node.Name = n.Name; 
+
 			if(n.decision_type)
 			{
-				Decision current_decision = new Decision();
-				current_decision.state_value_to_test = n.IndexToConsider; 
-				current_decision.test_value = n.TestValue; 
-				// Debug.Log("Node: " + node_counter.ToString() + " " + current_decision.ToString()); 
-				mapping.Add(n, current_decision); 
+				current_node.state_value_to_test = n.IndexToConsider; 
+				current_node.test_value = n.TestValue; 
+				current_node.decision_type = true; 
 			}
 			else
 			{
-				DecisionTreeAction current_action = new DecisionTreeAction(); 
-				current_action.actions = n.prob_actions; 
-				current_action.Normalize(); 
-				// Debug.Log("Node: " + node_counter.ToString() + " " + current_action.ToString()); 
-				mapping.Add(n, current_action); 
+				current_node.actions = n.prob_actions; 
+				current_node.Normalize(); 
 			}
-
-			node_counter += 1; 
+			mapping.Add(n, current_node); 
 		}
 
-
+		Debug.Log("Dict analysis"); 
 		foreach(Node n in nodes)
 		{
 			if(n.decision_type)
 			{
+
+				Debug.Log("Current node is " + mapping[n].ToString()); 
+				Debug.Log("True node is: " + mapping[n.my_true_node].ToString());
+				Debug.Log("False node is: " + mapping[n.my_false_node].ToString()); 
+
 				mapping[n].true_node = mapping[n.my_true_node]; 
 				mapping[n].false_node = mapping[n.my_false_node]; 
+				Debug.Log(mapping[n]); 
 			}
 		}
 
-		foreach(DecisionTreeNode d in mapping.Values)
+		foreach(DTNode d in mapping.Values)
 		{
+			Debug.Log("Adding " + d.ToString() + " to transalted_nodes"); 
 			translated_nodes.Add(d); 
 		}
-
-		// Debug.Log("Translated nodes of size " + translated_nodes.Count); 
-		// Debug.Log(translated_nodes); 
-		// Debug.Log(translated_nodes[0].GetType()); 
-		// Debug.Log(translated_nodes[1].GetType()); 
-		// Debug.Log(translated_nodes[2].GetType()); 
-		// my_dt.SetNodes(translated_nodes); 
 		my_dt.nodes = translated_nodes; 
+		Debug.Log("Final test"); 
+		foreach(DTNode test_node in my_dt.nodes)
+		{
+			Debug.Log(test_node); 
+		}
 
-		// Debug.Log(my_dt.nodes[0].GetType()); 
-		// Debug.Log(my_dt.nodes[1].GetType()); 
-		// Debug.Log(my_dt.nodes[2].GetType()); 
-
-        AssetDatabase.CreateAsset(my_dt, "Assets/ProbabilisticDecisionTree/DTFromCustom.asset");
+		AssetDatabase.CreateAsset(my_dt, "Assets/ProbabilisticDecisionTree/DTFromCustom.asset");
         AssetDatabase.SaveAssets();
 
         EditorUtility.FocusProjectWindow();
 
         Selection.activeObject = my_dt;
+
 	}
+
+	// private void CreateTree()
+	// {
+	// 	DecisionTree my_dt = ScriptableObject.CreateInstance<DecisionTree>();
+
+	// 	Dictionary<Node, DecisionTreeNode> mapping = new Dictionary<Node, DecisionTreeNode>(); 
+	// 	List<DecisionTreeNode> translated_nodes = new List<DecisionTreeNode>(); 
+
+	// 	int node_counter = 0; 
+	// 	foreach(Node n in nodes)
+	// 	{
+	// 		if(n.decision_type)
+	// 		{
+	// 			Decision current_decision = new Decision();
+	// 			current_decision.state_value_to_test = n.IndexToConsider; 
+	// 			current_decision.test_value = n.TestValue; 
+	// 			// Debug.Log("Node: " + node_counter.ToString() + " " + current_decision.ToString()); 
+	// 			mapping.Add(n, current_decision); 
+	// 		}
+	// 		else
+	// 		{
+	// 			DecisionTreeAction current_action = new DecisionTreeAction(); 
+	// 			current_action.actions = n.prob_actions; 
+	// 			current_action.Normalize(); 
+	// 			// Debug.Log("Node: " + node_counter.ToString() + " " + current_action.ToString()); 
+	// 			mapping.Add(n, current_action); 
+	// 		}
+
+	// 		node_counter += 1; 
+	// 	}
+
+
+	// 	foreach(Node n in nodes)
+	// 	{
+	// 		if(n.decision_type)
+	// 		{
+	// 			mapping[n].true_node = mapping[n.my_true_node]; 
+	// 			mapping[n].false_node = mapping[n.my_false_node]; 
+	// 		}
+	// 	}
+
+	// 	foreach(DecisionTreeNode d in mapping.Values)
+	// 	{
+	// 		translated_nodes.Add(d); 
+	// 	}
+
+	// 	// Debug.Log("Translated nodes of size " + translated_nodes.Count); 
+	// 	// Debug.Log(translated_nodes); 
+	// 	// Debug.Log(translated_nodes[0].GetType()); 
+	// 	// Debug.Log(translated_nodes[1].GetType()); 
+	// 	// Debug.Log(translated_nodes[2].GetType()); 
+	// 	// my_dt.SetNodes(translated_nodes); 
+	// 	my_dt.nodes = translated_nodes; 
+
+	// 	// Debug.Log(my_dt.nodes[0].GetType()); 
+	// 	// Debug.Log(my_dt.nodes[1].GetType()); 
+	// 	// Debug.Log(my_dt.nodes[2].GetType()); 
+
+ //        AssetDatabase.CreateAsset(my_dt, "Assets/ProbabilisticDecisionTree/DTFromCustom.asset");
+ //        AssetDatabase.SaveAssets();
+
+ //        EditorUtility.FocusProjectWindow();
+
+ //        Selection.activeObject = my_dt;
+	// }
 
 	private void DrawBackground()
 	{
@@ -385,6 +451,7 @@ public class Connection
 
 public class Node
 {
+	public string Name; 
 	public Rect rect; 
 	public string title = "Decision"; 
 	public bool is_dragged; 
