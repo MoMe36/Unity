@@ -7,27 +7,27 @@ using UnityEngine;
 public class DecisionTree : ScriptableObject
 {
 	public List<DTNode> nodes; 
+	// public Dictionary <string, DTNode> genealogy; 
 
 	public string Decide(GSR s)
 	{
 		string result="None"; 
-		DTNode n; 
+		int next_node = 0; 
 		DTNode current_node = nodes[0]; 
 		int counter = 0; 
 
-		// Debug.Break();
-		Debug.Log(current_node); 
-		Debug.Break();  
-		while(result == "None" && counter < 20)
+		while(next_node != -1)
 		{
-			Debug.Break(); 
-			// Debug.Log("counter: " + counter.ToString()); 
-			// Debug.Log(" Node: " + current_node.ToString()); 
-			// Debug.Log(" result: " + result); 
-			current_node.Decide(s, out n, out result); 
-			current_node = n; 
+			
+			// Debug.Log("Current node: " + current_node.Name + " Counter " + counter.ToString()); 
 
-			// Debug.Log(current_node); 
+			current_node.Decide(s, out next_node, out result); 
+			// Debug.Log("Next node: " + next_node.ToString()); 
+			if(next_node == -1)
+				return result; 
+			else
+				current_node = nodes[next_node]; 
+
 			counter += 1; 
 		}
 		return result; 
@@ -38,8 +38,8 @@ public class DecisionTree : ScriptableObject
 public class DTNode
 {
 	public string Name; 
-	public DTNode false_node; 
-	public DTNode true_node; 
+	public int false_node; 
+	public int true_node; 
 
 	public int state_value_to_test; 
 	public float test_value; 
@@ -52,7 +52,7 @@ public class DTNode
 
 	}
 
-	public void Decide(GSR s, out DTNode next_node , out string result)
+	public void Decide(GSR s, out int next_node , out string result)
 	{
 		if(decision_type)
 		{
@@ -61,7 +61,7 @@ public class DTNode
 		}
 		else
 		{
-			next_node = null; 
+			next_node = -1; 
 			result = Sample(); 
 		}
 	}
@@ -99,7 +99,7 @@ public class DTNode
 	{
 		string recap = Name; 
 		if(decision_type && true_node != null) 
-			recap += "  True node: " + true_node.ToString() +  " False node: " + false_node.ToString();  
+			recap += "  True node: " + true_node +  " False node: " + false_node;  
 		return recap;
 	}
 }

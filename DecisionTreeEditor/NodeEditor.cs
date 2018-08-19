@@ -136,8 +136,11 @@ public class NodeEditor : EditorWindow {
 		DecisionTree my_dt = ScriptableObject.CreateInstance<DecisionTree>(); 
 		Dictionary<Node, DTNode> mapping = new Dictionary<Node, DTNode>(); 
 
+		Dictionary<Node, int> gen_mapping = new Dictionary<Node, int>(); 
+
 		List<DTNode> translated_nodes = new List<DTNode>(); 
 
+		int counter_node = 0; 
 		foreach(Node n in nodes)
 		{
 			DTNode current_node = new DTNode(); 
@@ -155,35 +158,40 @@ public class NodeEditor : EditorWindow {
 				current_node.Normalize(); 
 			}
 			mapping.Add(n, current_node); 
+			gen_mapping.Add(n, counter_node); 
+			counter_node += 1; 
 		}
 
-		Debug.Log("Dict analysis"); 
+		// Debug.Log("Dict analysis"); 
 		foreach(Node n in nodes)
 		{
 			if(n.decision_type)
 			{
 
-				Debug.Log("Current node is " + mapping[n].ToString()); 
-				Debug.Log("True node is: " + mapping[n.my_true_node].ToString());
-				Debug.Log("False node is: " + mapping[n.my_false_node].ToString()); 
+				// Debug.Log("Current node is " + mapping[n].ToString()); 
+				// Debug.Log("True node is: " + mapping[n.my_true_node].ToString());
+				// Debug.Log("False node is: " + mapping[n.my_false_node].ToString()); 
 
-				mapping[n].true_node = mapping[n.my_true_node]; 
-				mapping[n].false_node = mapping[n.my_false_node]; 
-				Debug.Log(mapping[n]); 
+				mapping[n].true_node = gen_mapping[n.my_true_node]; 
+				mapping[n].false_node = gen_mapping[n.my_false_node]; 
+				// Debug.Log(mapping[n]); 
 			}
 		}
 
 		foreach(DTNode d in mapping.Values)
 		{
-			Debug.Log("Adding " + d.ToString() + " to transalted_nodes"); 
+			// Debug.Log("Adding " + d.ToString() + " to transalted_nodes"); 
 			translated_nodes.Add(d); 
 		}
 		my_dt.nodes = translated_nodes; 
-		Debug.Log("Final test"); 
-		foreach(DTNode test_node in my_dt.nodes)
-		{
-			Debug.Log(test_node); 
-		}
+		// my_dt.genealogy = gen_mapping; 
+		// Debug.Log("Final test"); 
+		// foreach(DTNode test_node in my_dt.nodes)
+		// {
+		// 	Debug.Log(test_node); 
+		// }
+
+		// Debug.Log(my_dt.genealogy.Count); 
 
 		AssetDatabase.CreateAsset(my_dt, "Assets/ProbabilisticDecisionTree/DTFromCustom.asset");
         AssetDatabase.SaveAssets();
