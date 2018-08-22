@@ -408,6 +408,11 @@ public class Node
 		maxSize = size; 
 
 		prob_actions = new ProbAction[NbActions]; 
+		for(int i =0; i<NbActions; i++)
+		{
+			prob_actions[i].decision_id = "ActionName"; 
+			prob_actions[i].prob = 0.5f; 
+		}
 	}
 
 	public void Drag(Vector2 delta)
@@ -434,22 +439,28 @@ public class Node
 	{
 
 		float handles_line_width = 5f; 
-		GUI.Box(rect, "", style); 
-		GUILayout.BeginArea(rect); 
-		title = GUILayout.TextField(title, skin.GetStyle("st1")); 
-
-		
-		GUILayout.EndArea(); 
-		DrawEditingToggle(); 
 		if(is_editing)
 		{
 			// Debug.Log(IndexToConsider); 
-			Handles.color = Color.red; 
+			Handles.color = new Color(0.7f,0.7f,0.7f,1f); 
 			if(decision_type)
 				DrawDecision(skin, handles_line_width); 
 			else
 				DrawAction(skin, handles_line_width); 
 		}
+
+		
+		if(decision_type)
+			GUI.Box(rect, title, skin.GetStyle("box")); 
+		else
+			GUI.Box(rect, title, skin.GetStyle("box_action")); 
+		// GUI.Box(rect, title, style);
+		// GUILayout.BeginArea(rect); 
+		// title = GUILayout.TextField(title, skin.GetStyle("st1")); 
+
+		
+		// GUILayout.EndArea(); 
+		DrawEditingToggle(); 
 
 		
 
@@ -476,6 +487,37 @@ public class Node
 
 	public void DrawDecision(GUISkin skin, float lines_width)
 	{
+		// Vector2 small_box_dim = new Vector2(80, 30); 
+		// Vector2 small_box_decal = new Vector2(80, 60); 
+
+		// Rect box_rect = Rect.zero; 
+		// box_rect.center = rect.center + new Vector2(150, 50); 
+		// box_rect.size = new Vector2(300,150); 
+
+		// Vector2 inter = new Vector2(rect.center.x, box_rect.center.y); 
+		// Handles.DrawAAPolyLine(lines_width, new Vector3 []{box_rect.center, inter, rect.center});  
+
+		// GUI.Box(box_rect, "", editing_style); 		
+
+		// Rect index_rect = Rect.zero; 
+		// index_rect.center = box_rect.center + new Vector2(small_box_decal.x/2, -3*small_box_decal.y/4); 
+		// index_rect.size = small_box_dim; 
+		// IndexToConsider = EditorGUI.IntField(index_rect, IndexToConsider); 
+
+		// Rect testvalue_rect = index_rect; 
+		// testvalue_rect.position += new Vector2(0, small_box_decal.y); 
+		// TestValue = EditorGUI.FloatField(testvalue_rect, TestValue); 
+
+		// Rect label_index_rect = Rect.zero; 
+		// label_index_rect.center = index_rect.center + new Vector2(-150, 0); 
+		// label_index_rect.size = small_box_dim; 
+		// EditorGUI.LabelField(label_index_rect, "Index to consider"); 
+
+		// Rect label_text_value_rect = label_index_rect; 
+		// label_text_value_rect.center +=  new Vector2(0, small_box_decal.y); 
+		// EditorGUI.LabelField(label_text_value_rect, "Test value"); 
+
+
 		Vector2 small_box_dim = new Vector2(80, 30); 
 		Vector2 small_box_decal = new Vector2(80, 60); 
 
@@ -486,28 +528,23 @@ public class Node
 		Vector2 inter = new Vector2(rect.center.x, box_rect.center.y); 
 		Handles.DrawAAPolyLine(lines_width, new Vector3 []{box_rect.center, inter, rect.center});  
 
-		GUI.Box(box_rect, "", editing_style); 		
+		GUI.Box(box_rect, "Decision   parameters", skin.GetStyle("prop_style")); 		
 
 		Rect index_rect = Rect.zero; 
 		index_rect.center = box_rect.center + new Vector2(small_box_decal.x/2, -3*small_box_decal.y/4); 
 		index_rect.size = small_box_dim; 
-		IndexToConsider = EditorGUI.IntField(index_rect, IndexToConsider); 
+		IndexToConsider = EditorGUI.IntField(index_rect, IndexToConsider, skin.GetStyle("label_boxes")); 
 
 		Rect testvalue_rect = index_rect; 
 		testvalue_rect.position += new Vector2(0, small_box_decal.y); 
-		TestValue = EditorGUI.FloatField(testvalue_rect, TestValue); 
+		TestValue = EditorGUI.FloatField(testvalue_rect, TestValue, skin.GetStyle("label_boxes")); 
 
-		Rect label_index_rect = Rect.zero; 
-		label_index_rect.center = index_rect.center + new Vector2(-150, 0); 
-		label_index_rect.size = small_box_dim; 
-		EditorGUI.LabelField(label_index_rect, "Index to consider"); 
+		Rect label_rect = index_rect; 
+		label_rect.center -= new Vector2(150, 0); 
+		GUI.Box(label_rect, "Index", skin.GetStyle("label_boxes")); 
 
-		Rect label_text_value_rect = label_index_rect; 
-		label_text_value_rect.center +=  new Vector2(0, small_box_decal.y); 
-		EditorGUI.LabelField(label_text_value_rect, "Test value"); 
-
-		
-
+		label_rect.center += new Vector2(0, small_box_decal.y); 
+		GUI.Box(label_rect, "Test value", skin.GetStyle("label_boxes")); 
 
 	}
 
@@ -520,17 +557,21 @@ public class Node
 
 		Rect box_rect = Rect.zero; 
 		box_rect.center = rect.center + new Vector2(150, 50); 
-		box_rect.size = new Vector2(300,300); 
+		box_rect.size = new Vector2(300,250); 
 
 		Vector2 inter = new Vector2(rect.center.x, box_rect.center.y); 
-		Handles.DrawAAPolyLine(lines_width, new Vector3 []{box_rect.center, inter, rect.center});
+		Handles.DrawAAPolyLine(lines_width, new Vector3 []{box_rect.center, inter, rect.center});  
 
-		GUI.Box(box_rect, "", editing_style); 
+		GUI.Box(box_rect, "Decision   parameters", skin.GetStyle("prop_style_bigger")); 
 
 		Rect nbaction_rect = Rect.zero; 
-		nbaction_rect.center = box_rect.center + new Vector2(-small_box_dim.x/2, -135); 
+		nbaction_rect.center = box_rect.center + new Vector2(-small_box_dim.x/2 + 80, -100); 
 		nbaction_rect.size = small_box_dim; 
-		NbActions = EditorGUI.IntField(nbaction_rect, NbActions); 
+		NbActions = EditorGUI.IntField(nbaction_rect, NbActions, skin.GetStyle("label_boxes")); 
+
+		nbaction_rect.center -= new Vector2(80, 0); 
+		GUI.Box(nbaction_rect, "Nb actions", skin.GetStyle("label_boxes"));
+
 
 		NbActions = NbActions < 1 ? 1 : NbActions; 
 		NbActions = Mathf.Min(NbActions, 5); 
@@ -539,12 +580,22 @@ public class Node
 		{
 			prob_actions = new ProbAction [NbActions]; 
 			Debug.Log("Creating prob actions of size " + NbActions.ToString()); 
+			for(int i =0; i<NbActions; i++)
+			{
+				prob_actions[i].decision_id = "ActionName"; 
+				prob_actions[i].prob = 0.5f; 
+			}
 		}
 
 		if(prob_actions.Length != NbActions)
 		{
 			prob_actions = new ProbAction[NbActions]; 
 			Debug.Log("Adapting prob actions of size " + NbActions.ToString()); 
+			for(int i =0; i<NbActions; i++)
+			{
+				prob_actions[i].decision_id = "ActionName"; 
+				prob_actions[i].prob = 0.5f; 
+			}
 		}
 
 		if(prob_actions != null)
@@ -552,14 +603,14 @@ public class Node
 			for(int i = 0; i < NbActions; i++)
 			{
 				Rect prob_name_box = Rect.zero;
-				prob_name_box.center = nbaction_rect.center + new Vector2(-150 + small_box_dim.x/2, i*45 + 30);  
+				prob_name_box.center = nbaction_rect.center + new Vector2(-150 + small_box_dim.x/2, i*30 + 15);  
 				prob_name_box.size = small_box_dim; 
 				Rect prob_prob_box = prob_name_box; 
 				prob_prob_box.center += new Vector2(150,0); 
 				prob_name_box.size = small_box_dim;  
 
-				prob_actions[i].decision_id = EditorGUI.TextField(prob_name_box, prob_actions[i].decision_id); 
-				prob_actions[i].prob = EditorGUI.FloatField(prob_prob_box, prob_actions[i].prob); 
+				prob_actions[i].decision_id = EditorGUI.TextField(prob_name_box, prob_actions[i].decision_id, skin.GetStyle("label_boxes")); 
+				prob_actions[i].prob = EditorGUI.FloatField(prob_prob_box, prob_actions[i].prob, skin.GetStyle("label_boxes")); 
 			}
 		}
 
