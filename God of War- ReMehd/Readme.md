@@ -7,5 +7,9 @@
 * Currently used values 
 
 ## Important notes 
-1. In GoWFight: The end of the file contains several structs used through the various scripts. Notably HitData
-1. The new CheckMaxSpeed in GoWMove focuses only on horizontal speed. Better results. 
+1. In **GoWFight**: The end of the file contains several structs used through the various scripts. Notably HitData
+1. The new `CheckMaxSpeed` in **GoWMove** focuses only on horizontal speed. Better results. 
+1. Some values I used for the movement script: ![Screenshot](GoWValues.png)
+
+
+
