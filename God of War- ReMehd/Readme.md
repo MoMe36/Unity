@@ -6,6 +6,10 @@
 * State Machine Behaviour 
 * Currently used values 
 
+### TODO 
+* Heavy impact animation 
+* Heavy Hit 
+
 ### 25/08 Update 2 
 
 1. Added **time stop** on impact. Implemented it as a static function, that is called from any hitbox. See **GoWCommon**. It was however necessary to put it on a empty GameObject in game because I rely on the `Update` function to deduce when to compute when to get time back to normal 
