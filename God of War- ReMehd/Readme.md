@@ -6,6 +6,11 @@
 * State Machine Behaviour 
 * Currently used values 
 
+### 25/08 Update 2 
+
+1. Added **time stop** on impact. Implemented it as a static function, that is called from any hitbox. See **GoWCommon**. It was however necessary to put it on a empty GameObject in game because I rely on the `Update` function to deduce when to compute when to get time back to normal 
+
+1. Added direction for hit impact. Allows to shoot ennemy in the air for instance. **Idea**: Figure out a way to adapt gravity and drag when hit.  
 
 ### 25/08 Update
 
