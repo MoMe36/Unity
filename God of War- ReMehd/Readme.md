@@ -12,6 +12,8 @@
 
 1. Added direction for hit impact. Allows to shoot ennemy in the air for instance. **Idea**: Figure out a way to adapt gravity and drag when hit.  
 
+1. Added impact animation support. Created 4 animations impact for San. 
+
 ### 25/08 Update
 
 1. **HitData**: A struct used to hold informations on hits. I create a public instance of this struct in each animation state featuring a hit. Data currently consists of 
