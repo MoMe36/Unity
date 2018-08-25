@@ -4,37 +4,39 @@ using UnityEngine;
 
 public class GoWHitImpact : MonoBehaviour {
 
-	[Header("0 = Impact | 1 = Hit")]	
-	public int TypeImpact = 0; 
-	public bool Active = false; 
-	public GameObject ImpactEffect; 
+	[Header("0 = Impact | 1 = Hit")]
+	public int TypeImpact = 0;
+	public bool Active = false;
+	public GameObject ImpactEffect;
 
-	TrailRenderer trail; 
-	GoWFight holder; 	
+	TrailRenderer trail;
+	GoWFight holder;
+
+	[HideInInspector] public HitData current_hit_data;
 
 	// Use this for initialization
 	void Start () {
-		Initialization(); 
-			
+		Initialization();
+
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
 		if(TypeImpact == 0)
 		{
-			GoWHitImpact other_hit = other.gameObject.GetComponent<GoWHitImpact>(); 
+			GoWHitImpact other_hit = other.gameObject.GetComponent<GoWHitImpact>();
 			if(other_hit != null)
 			{
 				if(other_hit.TypeImpact == 1)
 				{
 					if(other_hit.Active)
 					{
-						Impacted(other.transform.position, 5); 
+						Impacted(other_hit, other_hit.current_hit_data);
 					}
 				}
 			}
@@ -42,30 +44,33 @@ public class GoWHitImpact : MonoBehaviour {
 
 	}
 
-	void Impacted(Vector3 pos, float force)
+	void Impacted(GoWHitImpact other_hit, HitData impact_hit_data)
 	{
-		GameObject p = Instantiate(ImpactEffect, pos, ImpactEffect.transform.rotation) as GameObject; 
-		holder.Impacted(force); 
+		Vector3 hit_position = other_hit.transform.position;
+		Vector3 ennemy_position = other_hit.holder.transform.position;
+		GameObject p = Instantiate(ImpactEffect, hit_position, ImpactEffect.transform.rotation) as GameObject;
+		holder.Impacted(ennemy_position, impact_hit_data);
 	}
 
-	public void Switch(bool state)
+	public void Switch(HitData hit_data, bool state)
 	{
-		Active = state; 
+		Active = state;
 		if(Active)
 		{
-			trail.enabled = true; 
+			current_hit_data = hit_data;
+			trail.enabled = true;
 		}
 		else
 		{
-			trail.enabled = false; 
+			trail.enabled = false;
 		}
 	}
 
 	void Initialization()
 	{
-		// SetTrail(); 
-		trail = GetComponent<TrailRenderer>(); 
-		trail.enabled = false; 
-		holder = transform.root.gameObject.GetComponent<GoWFight>(); 
+		// SetTrail();
+		trail = GetComponent<TrailRenderer>();
+		trail.enabled = false;
+		holder = transform.root.gameObject.GetComponent<GoWFight>();
 	}
 }

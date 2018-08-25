@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class HitInfo : StateMachineBehaviour {
 
-	public HitData hit_data; 
+	public HitData hit_data;
+	public bool ResetHitOnEnter;
 
 	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		Call(animator, true); 
+		Call(animator, true);
+		if(ResetHitOnEnter)
+			animator.SetBool("Hit", false); 
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -18,7 +21,7 @@ public class HitInfo : StateMachineBehaviour {
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		Call(animator, false); 
+		Call(animator, false);
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here
@@ -28,12 +31,12 @@ public class HitInfo : StateMachineBehaviour {
 
 	// OnStateIK is called right after Animator.OnAnimatorIK(). Code that sets up animation IK (inverse kinematics) should be implemented here.
 	// override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		
+
 	// }
 
 
 	void Call(Animator animator, bool state)
 	{
-		animator.gameObject.GetComponent<GoWModular>().HitInform(hit_data, state); 
+		animator.gameObject.GetComponent<GoWModular>().HitInform(hit_data, state);
 	}
 }
