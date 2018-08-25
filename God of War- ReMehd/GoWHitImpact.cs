@@ -46,10 +46,17 @@ public class GoWHitImpact : MonoBehaviour {
 
 	void Impacted(GoWHitImpact other_hit, HitData impact_hit_data)
 	{
+		// Stopping Time 
+		GoWCommon.StopTime(); 
+
+		// Visual FX
 		Vector3 hit_position = other_hit.transform.position;
 		Vector3 ennemy_position = other_hit.holder.transform.position;
+		Transform ennemy_transform = other_hit.holder.transform;
 		GameObject p = Instantiate(ImpactEffect, hit_position, ImpactEffect.transform.rotation) as GameObject;
-		holder.Impacted(ennemy_position, impact_hit_data);
+
+		// Physical response and animation
+		holder.Impacted(ennemy_transform, impact_hit_data);
 	}
 
 	public void Switch(HitData hit_data, bool state)

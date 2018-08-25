@@ -61,13 +61,19 @@ public class GoWFight : MonoBehaviour {
 		rb.velocity += transform.forward*hd.ImpulsionStrength;
 	}
 
-	public void Impacted(Vector3 pos, HitData impact_hit_data)
+	public void Impacted(Transform ennemy_transform, HitData impact_hit_data)
 	{
-		Debug.Log("Impact called on: " + gameObject.ToString());
-		Vector3 direction = Vector3.ProjectOnPlane(transform.position - pos, Vector3.up).normalized;
-		Debug.DrawRay(transform.position, direction*impact_hit_data.ImpactForce, Color.red, 1f);
-		rb.velocity += direction*impact_hit_data.ImpactForce;
-		Debug.Log(impact_hit_data.ToString());
+		// Vector3 direction = Vector3.ProjectOnPlane(transform.position - pos, Vector3.up).normalized;
+		Vector3 direction_parameters = impact_hit_data.DirectionComponents; 
+
+		Vector3 direction = ennemy_transform.forward*direction_parameters.z + 
+							ennemy_transform.up*direction_parameters.y + 
+							ennemy_transform.right*direction_parameters.x; 
+
+		rb.velocity += direction.normalized*impact_hit_data.ImpactForce;
+
+		
+		anim.SetTrigger(impact_hit_data.ImpactTriggerName); 
 	}
 
 	void Initialization()
@@ -93,6 +99,8 @@ public struct HitData
 	public string BoxName;
 	public float ImpulsionStrength;
 	public float ImpactForce;
+	public Vector3 DirectionComponents; 
+	public string ImpactTriggerName; 
 
 	public string ToString()
 	{
