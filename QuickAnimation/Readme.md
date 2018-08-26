@@ -1,3 +1,13 @@
+# Update 26/08/18 
+
+* Minor fixes in QuickAnimation.py 
+* Created a script to automatically force a bone to follow a target bone(position and rotation) for one or all animations. Useful for adding a weapon and having it follow the hand, the back or whichever other bone during throughout all animations. Of course, result is still tweakable afterwards. 
+
+## TODO
+* Add possibility to offset the bone (both vector or rotation) 
+
+
+
 # Quick animation scripts 
 
 1. Use UnityArmature.py to generate an armature consistent with futher steps
