@@ -10,6 +10,8 @@ public class GoWFight : MonoBehaviour {
 	Dictionary<string, GoWHitImpact> HitDict;
 	Dictionary<string, GoWHitImpact> ImpactDict;
 
+	public bool is_hitting;
+
 	Animator anim;
 	Rigidbody rb;
 
@@ -53,6 +55,11 @@ public class GoWFight : MonoBehaviour {
 		if(state)
 		{
 			ApplyHitImpulsion(hit_data);
+			is_hitting = true;
+		}
+		else
+		{
+			is_hitting = false;
 		}
 	}
 
@@ -64,22 +71,25 @@ public class GoWFight : MonoBehaviour {
 	public void Impacted(Transform ennemy_transform, HitData impact_hit_data)
 	{
 		// Vector3 direction = Vector3.ProjectOnPlane(transform.position - pos, Vector3.up).normalized;
-		Vector3 direction_parameters = impact_hit_data.DirectionComponents; 
+		Vector3 direction_parameters = impact_hit_data.DirectionComponents;
 
-		Vector3 direction = ennemy_transform.forward*direction_parameters.z + 
-							ennemy_transform.up*direction_parameters.y + 
-							ennemy_transform.right*direction_parameters.x; 
+		Vector3 direction = ennemy_transform.forward*direction_parameters.z +
+							ennemy_transform.up*direction_parameters.y +
+							ennemy_transform.right*direction_parameters.x;
 
 		rb.velocity += direction.normalized*impact_hit_data.ImpactForce;
 
-		
-		anim.SetTrigger(impact_hit_data.ImpactTriggerName); 
+
+		anim.SetTrigger(impact_hit_data.ImpactTriggerName);
 	}
 
 	void Initialization()
 	{
 		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody>();
+
+		is_hitting = false;
+
 		FillDicts();
 	}
 
@@ -99,8 +109,8 @@ public struct HitData
 	public string BoxName;
 	public float ImpulsionStrength;
 	public float ImpactForce;
-	public Vector3 DirectionComponents; 
-	public string ImpactTriggerName; 
+	public Vector3 DirectionComponents;
+	public string ImpactTriggerName;
 
 	public string ToString()
 	{

@@ -10,6 +10,9 @@ public class GoWInputs : MonoBehaviour {
 
 	public bool Jump; 
 	public bool Hit; 
+	public bool CallAxe; 
+	public bool Throw; 
+	public bool ChangeWeapon; 
 	// Use this for initialization
 	void Start () {
 		
@@ -37,7 +40,10 @@ public class GoWInputs : MonoBehaviour {
 
 
 		Jump = Input.GetButtonDown("AButton") ? true : false; 
-		Hit = Input.GetButtonDown("R1") ? true : false; 
+		Hit = Input.GetButtonDown("R1") ? true : false;
+		CallAxe = Input.GetButtonDown("YButton") ? true : false;  
+		Throw = Input.GetButtonDown("L1") ? true : false; 
+		ChangeWeapon = Input.GetAxis("CroixH") > 0.5f ? true : false; 
 	}
 
 
