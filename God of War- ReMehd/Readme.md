@@ -6,6 +6,11 @@
 * State Machine Behaviour 
 * Currently used values 
 
+
+### 20/09 Update 
+
+See [blog post](https://mome36.github.io/unity/gamedev/controller/2018/09/21/UTT3-GoW/) 
+
 ### TODO 
 * Heavy impact animation 
 * Heavy Hit 
